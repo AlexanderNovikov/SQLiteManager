@@ -32,7 +32,6 @@ public class MainWindow {
         leftPart.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1, true));
         rightPart = new JPanel(new GridBagLayout());
         rightPart.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1, true));
-        rightPart.setLayout(new BoxLayout(rightPart, BoxLayout.PAGE_AXIS));
 
         constraints.weightx = 0.2;
         mainPanel.add(leftPart, constraints);
@@ -45,7 +44,7 @@ public class MainWindow {
         addValuestList(rightPart);
 
         frame.getContentPane().add(mainPanel);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
     }
@@ -83,8 +82,8 @@ public class MainWindow {
         textPane1 = new JTextPane();
         JPanel panel = new JPanel(new GridBagLayout());
         JScrollPane scrollPane = new JScrollPane(textPane1);
-        constraints.weightx = 1.0;
-        constraints.weighty = 0.1;
+        constraints.weightx = 0.8;
+        constraints.weighty = 1.0;
         panel.add(scrollPane, constraints);
         parentPanel.add(panel, constraints);
 /*        JPanel buttonPanel = new JPanel(new GridBagLayout());
@@ -101,8 +100,8 @@ public class MainWindow {
         list1 = new JList();
         JPanel panel = new JPanel(new GridBagLayout());
         JScrollPane scrollPane = new JScrollPane(list1);
-        constraints.weightx = 1.0;
-        constraints.weighty = 0.9;
+        constraints.weightx = 0.2;
+        constraints.weighty = 1.0;
         panel.add(scrollPane, constraints);
         parentPanel.add(panel, constraints);
     }
