@@ -1,4 +1,8 @@
-package com.github.sqlitEngine.gui;
+package com.github.sqliteManager.gui;
+
+import com.github.sqliteManager.core.SQLiteEngine;
+import com.github.sqliteManager.core.models.Column;
+import com.github.sqliteManager.core.models.Table;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -11,19 +15,22 @@ import java.awt.*;
 public class MainWindow {
     private JFrame frame;
     private GridBagConstraints constraints;
-    private JTree tree1;
-    private JList list1;
-    private JButton button1;
-    private JButton button2;
+    private DefaultMutableTreeNode root;
+    private DefaultTreeModel treeModel;
+    private JTree tree;
+    private JList list;
+    private JButton buttonExecute;
+    private JButton buttonClean;
     private JTextPane textPane1;
     private JPanel mainPanel;
     private JPanel leftPart;
     private JPanel rightPart;
     private JMenuBar menuBar;
+    private SQLiteEngine sqLiteEngine;
 
     public void initMainWindow() {
         frame = new JFrame("MainWindow");
-        frame.setSize(800, 600);
+        frame.setExtendedState(frame.getExtendedState() | JFrame.MAXIMIZED_BOTH);
         mainPanel = new JPanel(new GridBagLayout());
         constraints = new GridBagConstraints();
         constraints.fill = GridBagConstraints.BOTH;
@@ -39,8 +46,11 @@ public class MainWindow {
         mainPanel.add(rightPart,constraints);
 
         initMenu(frame);
+        sqLiteEngine = new SQLiteEngine("database.sqlite");
+        sqLiteEngine.openDB();
         addDBPanel(leftPart);
         addSQLTextField(rightPart);
+        addSQLButtons(rightPart);
         addValuestList(rightPart);
 
         frame.getContentPane().add(mainPanel);
@@ -69,41 +79,56 @@ public class MainWindow {
     }
 
     private void addDBPanel(JPanel parentPanel) {
-        DefaultMutableTreeNode root = new DefaultMutableTreeNode("rooooooooot");
-        DefaultTreeModel treeModel = new DefaultTreeModel(root);
-        JPanel panel = new JPanel(new GridBagLayout());
-        tree1 = new JTree(treeModel);
-        JScrollPane scrollPane = new JScrollPane(tree1);
-        panel.add(scrollPane, constraints);
-        parentPanel.add(panel, constraints);
+        root = new DefaultMutableTreeNode(sqLiteEngine.getFileName());
+        this.fillDBTree(root);
+        treeModel = new DefaultTreeModel(root);
+        tree = new JTree(treeModel);
+        JScrollPane scrollPane = new JScrollPane(tree);
+        parentPanel.add(scrollPane, constraints);
+    }
+
+    private void fillDBTree(DefaultMutableTreeNode root) {
+        for (Table table : sqLiteEngine.getTableList().values()) {
+            DefaultMutableTreeNode tableNode = new DefaultMutableTreeNode(table.getTableName());
+            root.add(tableNode);
+            for (Column column : sqLiteEngine.getColumnList(table).values()) {
+                DefaultMutableTreeNode columnNode = new DefaultMutableTreeNode(column.getColumnName());
+                tableNode.add(columnNode);
+            }
+        }
     }
 
     private void addSQLTextField(JPanel parentPanel) {
         textPane1 = new JTextPane();
-        JPanel panel = new JPanel(new GridBagLayout());
         JScrollPane scrollPane = new JScrollPane(textPane1);
-        constraints.weightx = 0.8;
-        constraints.weighty = 1.0;
-        panel.add(scrollPane, constraints);
-        parentPanel.add(panel, constraints);
-/*        JPanel buttonPanel = new JPanel(new GridBagLayout());
-        button1 = new JButton("Clean");
-        button2 = new JButton("Execute");
-        buttonPanel.add(button1);
-        buttonPanel.add(button2);
+        constraints.weightx = 1.0;
+        constraints.weighty = 0.3;
+        constraints.gridx = 0;
+        constraints.gridy = 0;
+        parentPanel.add(scrollPane, constraints);
+    }
+
+    private void addSQLButtons(JPanel parentPanel) {
+        JPanel buttonPanel = new JPanel(new GridBagLayout());
+        buttonExecute = new JButton("Clean");
+        buttonClean = new JButton("Execute");
+        buttonPanel.add(buttonExecute);
+        buttonPanel.add(buttonClean);
         constraints.weightx = 1.0;
         constraints.weighty = 0.01;
-        parentPanel.add(buttonPanel, constraints);*/
+        constraints.gridx = 0;
+        constraints.gridy = 1;
+        parentPanel.add(buttonPanel, constraints);
     }
 
     private void addValuestList(JPanel parentPanel) {
-        list1 = new JList();
-        JPanel panel = new JPanel(new GridBagLayout());
-        JScrollPane scrollPane = new JScrollPane(list1);
-        constraints.weightx = 0.2;
-        constraints.weighty = 1.0;
-        panel.add(scrollPane, constraints);
-        parentPanel.add(panel, constraints);
+        list = new JList();
+        JScrollPane scrollPane = new JScrollPane(list);
+        constraints.weightx = 1.0;
+        constraints.weighty = 0.7;
+        constraints.gridx = 0;
+        constraints.gridy = 2;
+        parentPanel.add(scrollPane, constraints);
     }
 
 }
