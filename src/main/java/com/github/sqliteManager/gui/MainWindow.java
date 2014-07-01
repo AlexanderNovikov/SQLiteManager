@@ -8,28 +8,29 @@ import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.util.Collection;
 
 /**
  * Created by alexander on 6/29/14.
  */
 public class MainWindow {
+    public static final String PROGRAM_NAME = "SQLite Manager";
     private JFrame frame;
     private GridBagConstraints constraints;
     private DefaultMutableTreeNode root;
     private DefaultTreeModel treeModel;
     private JTree tree;
     private JList list;
-    private JButton buttonExecute;
-    private JButton buttonClean;
+    private JButton buttonExecute, buttonClean;
     private JTextPane textPane1;
-    private JPanel mainPanel;
-    private JPanel leftPart;
-    private JPanel rightPart;
-    private JMenuBar menuBar;
-    private SQLiteEngine sqLiteEngine;
+    private JPanel mainPanel, leftPart ,rightPart;
+    private JPopupMenu dbMenu, tableMenu, columnMenu;
 
-    public void initMainWindow() {
-        frame = new JFrame("MainWindow");
+    public MainWindow() {
+        frame = new JFrame(PROGRAM_NAME);
         frame.setExtendedState(frame.getExtendedState() | JFrame.MAXIMIZED_BOTH);
         mainPanel = new JPanel(new GridBagLayout());
         constraints = new GridBagConstraints();
@@ -45,10 +46,8 @@ public class MainWindow {
         constraints.weightx = 0.8;
         mainPanel.add(rightPart,constraints);
 
-        initMenu(frame);
-        sqLiteEngine = new SQLiteEngine("database.sqlite");
-        sqLiteEngine.openDB();
         addDBPanel(leftPart);
+        new MainMenu(frame, tree, treeModel, root);
         addSQLTextField(rightPart);
         addSQLButtons(rightPart);
         addValuestList(rightPart);
@@ -59,43 +58,12 @@ public class MainWindow {
         frame.setVisible(true);
     }
 
-    private void initMenu(JFrame frame) {
-        menuBar = new JMenuBar();
-        addJMenu(menuBar, "File");
-        addJMenuItem(menuBar.getMenu(0), "Open");
-        addJMenuItem(menuBar.getMenu(0), "Close");
-        addJMenu(menuBar, "Edit");
-        addJMenu(menuBar, "Help");
-        frame.setJMenuBar(menuBar);
-    }
-
-    private void addJMenu(JMenuBar menuBar, String menuName) {
-        JMenu menu = new JMenu(menuName);
-        menuBar.add(menu);
-    }
-    private void addJMenuItem(JMenu menu, String menuItemName) {
-        JMenuItem menuItem = new JMenuItem(menuItemName); //TODO Add action
-        menu.add(menuItem);
-    }
-
     private void addDBPanel(JPanel parentPanel) {
-        root = new DefaultMutableTreeNode(sqLiteEngine.getFileName());
-        this.fillDBTree(root);
+        root = new DefaultMutableTreeNode();
         treeModel = new DefaultTreeModel(root);
         tree = new JTree(treeModel);
         JScrollPane scrollPane = new JScrollPane(tree);
         parentPanel.add(scrollPane, constraints);
-    }
-
-    private void fillDBTree(DefaultMutableTreeNode root) {
-        for (Table table : sqLiteEngine.getTableList().values()) {
-            DefaultMutableTreeNode tableNode = new DefaultMutableTreeNode(table.getTableName());
-            root.add(tableNode);
-            for (Column column : sqLiteEngine.getColumnList(table).values()) {
-                DefaultMutableTreeNode columnNode = new DefaultMutableTreeNode(column.getColumnName());
-                tableNode.add(columnNode);
-            }
-        }
     }
 
     private void addSQLTextField(JPanel parentPanel) {
@@ -130,5 +98,4 @@ public class MainWindow {
         constraints.gridy = 2;
         parentPanel.add(scrollPane, constraints);
     }
-
 }
