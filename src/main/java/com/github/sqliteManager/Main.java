@@ -1,6 +1,6 @@
 package com.github.sqliteManager;
 
-import com.github.sqliteManager.gui.MainWindow;
+import com.github.sqliteManager.ui.MainWindow;
 
 /**
  * Created by alexander on 6/29/14.

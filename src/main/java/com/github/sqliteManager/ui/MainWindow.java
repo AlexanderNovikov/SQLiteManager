@@ -1,17 +1,9 @@
-package com.github.sqliteManager.gui;
-
-import com.github.sqliteManager.core.SQLiteEngine;
-import com.github.sqliteManager.core.models.Column;
-import com.github.sqliteManager.core.models.Table;
+package com.github.sqliteManager.ui;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-import java.util.Collection;
 
 /**
  * Created by alexander on 6/29/14.

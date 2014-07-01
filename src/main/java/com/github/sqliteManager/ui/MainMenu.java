@@ -1,10 +1,9 @@
-package com.github.sqliteManager.gui;
+package com.github.sqliteManager.ui;
 
 import com.github.sqliteManager.core.SQLiteEngine;
-import com.github.sqliteManager.gui.dbTree.DBTreeEngine;
+import com.github.sqliteManager.ui.dbTree.DBTreeEngine;
 
 import javax.swing.*;
-import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import java.awt.event.ActionEvent;
@@ -43,9 +42,10 @@ public class MainMenu {
                 if (selectedFile != null) {
                     sqLiteEngine = new SQLiteEngine(selectedFile);
                     sqLiteEngine.openDB();
-                    treeEngine = new DBTreeEngine(sqLiteEngine, root, treeModel);
+                    treeEngine = new DBTreeEngine(sqLiteEngine, root, tree, treeModel);
                     treeEngine.cleanDBTree();
                     treeEngine.fillDBTree();
+                    treeEngine.addPopupMenu();
                 }
             }
         });
