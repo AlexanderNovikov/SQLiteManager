@@ -10,7 +10,10 @@ import java.awt.*;
  */
 public class MainWindow {
     public static final String PROGRAM_NAME = "SQLite Manager";
+    public static final String CLEAN_BUTTON_LABEL = "Clean";
+    public static final String EXECUTE_BUTTON_LABEL = "Execute";
     private JFrame frame;
+    private JPanel mainPanel, leftPart ,rightPart;
     private GridBagConstraints constraints;
     private DefaultMutableTreeNode root;
     private DefaultTreeModel treeModel;
@@ -18,8 +21,7 @@ public class MainWindow {
     private JList list;
     private JButton buttonExecute, buttonClean;
     private JTextPane textPane1;
-    private JPanel mainPanel, leftPart ,rightPart;
-    private JPopupMenu dbMenu, tableMenu, columnMenu;
+
 
     public MainWindow() {
         frame = new JFrame(PROGRAM_NAME);
@@ -70,8 +72,8 @@ public class MainWindow {
 
     private void addSQLButtons(JPanel parentPanel) {
         JPanel buttonPanel = new JPanel(new GridBagLayout());
-        buttonExecute = new JButton("Clean");
-        buttonClean = new JButton("Execute");
+        buttonExecute = new JButton(CLEAN_BUTTON_LABEL);
+        buttonClean = new JButton(EXECUTE_BUTTON_LABEL);
         buttonPanel.add(buttonExecute);
         buttonPanel.add(buttonClean);
         constraints.weightx = 1.0;

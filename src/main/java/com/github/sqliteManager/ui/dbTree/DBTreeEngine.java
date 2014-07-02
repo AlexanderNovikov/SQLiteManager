@@ -11,25 +11,41 @@ import javax.swing.tree.TreePath;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
 import java.util.Collection;
 
 /**
  * Created by alexander on 01/07/14.
  */
 public class DBTreeEngine {
-    public static final String DATA_BASE_NAME_STRING = "Database: ";
-    public static final String TABLE_NAME_STRING = "Table: ";
-    public static final String COLUMN_NAME_STRING = "Column: ";
+    private static final String DATA_BASE_NAME_STRING = "Database: ";
+    private static final String TABLE_NAME_STRING = "Table: ";
+    private static final String COLUMN_NAME_STRING = "Column: ";
+    private static final String DATABASE_LABEL = "Database";
+    private static final String TABLE_LABEL = "Table";
+    private static final String COLUMN_LABEL = "Column";
     private SQLiteEngine sqLiteEngine;
     private DefaultMutableTreeNode root;
     private JTree tree;
     private DefaultTreeModel treeModel;
 
-    public DBTreeEngine(SQLiteEngine sqLiteEngine, DefaultMutableTreeNode root, JTree tree, DefaultTreeModel treeModel) {
-        this.sqLiteEngine = sqLiteEngine;
+    public DBTreeEngine(DefaultMutableTreeNode root, JTree tree, DefaultTreeModel treeModel) {
         this.root = root;
         this.tree = tree;
         this.treeModel = treeModel;
+    }
+
+    public void openDB(File selectedFile) {
+        sqLiteEngine = new SQLiteEngine(selectedFile);
+        sqLiteEngine.openDB();
+        cleanDBTree();
+        fillDBTree();
+        addPopupMenu();
+    }
+
+    public void closeDB() {
+        sqLiteEngine.closeDB();
+        cleanDBTree();
     }
 
     public void fillDBTree() {
@@ -59,13 +75,18 @@ public class DBTreeEngine {
             public void mousePressed(MouseEvent e) {
                 if (SwingUtilities.isRightMouseButton(e)) {
                     TreePath path = tree.getPathForLocation(e.getX(), e.getY());
-                    if (path.getLastPathComponent().toString().split(":")[0].equals("Database")) {
-
-                    } else if (path.getLastPathComponent().toString().split(":").equals("Table")) {
-                        TablePopupMenu menu = new TablePopupMenu(new JPopupMenu());
-                        menu.show(tree, e.getX(), e.getY());
-                    } else if (path.getLastPathComponent().toString().split(":").equals("Column")) {
-
+                    if (path != null) {
+                        String label = path.getLastPathComponent().toString().split(":")[0];
+                        if (label.equals(DATABASE_LABEL)) {
+                            DBPopupMenu menu = new DBPopupMenu();
+                            menu.getMenu().show(tree, e.getX(), e.getY());
+                        } else if (label.equals(TABLE_LABEL)) {
+                            TablePopupMenu menu = new TablePopupMenu();
+                            menu.getMenu().show(tree, e.getX(), e.getY());
+                        } else if (label.equals(COLUMN_LABEL)) {
+                            ColumnPopupMenu menu = new ColumnPopupMenu();
+                            menu.getMenu().show(tree, e.getX(), e.getY());
+                        }
                     }
                 }
             }
