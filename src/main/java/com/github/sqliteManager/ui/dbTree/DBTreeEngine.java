@@ -69,6 +69,15 @@ public class DBTreeEngine {
         treeModel.reload();
     }
 
+    public void refreshDBTree() {
+        treeModel.reload();
+    }
+
+    public void addNode(String nodeName) {
+        System.out.println(sqLiteEngine);
+//        sqLiteEngine.addTable(nodeName);
+    }
+
     public void addPopupMenu() {
         tree.addMouseListener(new MouseAdapter() {
             @Override
@@ -78,7 +87,7 @@ public class DBTreeEngine {
                     if (path != null) {
                         String label = path.getLastPathComponent().toString().split(":")[0];
                         if (label.equals(DATABASE_LABEL)) {
-                            DBPopupMenu menu = new DBPopupMenu();
+                            DBPopupMenu menu = new DBPopupMenu(root, tree, treeModel);
                             menu.getMenu().show(tree, e.getX(), e.getY());
                         } else if (label.equals(TABLE_LABEL)) {
                             TablePopupMenu menu = new TablePopupMenu();

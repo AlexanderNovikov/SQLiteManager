@@ -44,7 +44,7 @@ public class MainWindow {
         new MainMenu(frame, tree, treeModel, root);
         addSQLTextField(rightPart);
         addSQLButtons(rightPart);
-        addValuestList(rightPart);
+        addValuesList(rightPart);
 
         frame.getContentPane().add(mainPanel);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -83,7 +83,7 @@ public class MainWindow {
         parentPanel.add(buttonPanel, constraints);
     }
 
-    private void addValuestList(JPanel parentPanel) {
+    private void addValuesList(JPanel parentPanel) {
         list = new JList();
         JScrollPane scrollPane = new JScrollPane(list);
         constraints.weightx = 1.0;

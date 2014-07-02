@@ -13,12 +13,14 @@ import java.util.HashMap;
  */
 public class SQLiteEngine {
     private static final int QUERY_TIMEOUT = 30;
-    public static final String TABLE_COLUMN_NAME = "name";
-    public static final String TABLE_COLUMN_TYPE = "type";
-    public static final String TABLE_COLUMN_NOTNULL = "notnull";
-    public static final String TABLE_COLUMN_DEFAULT_VALUE = "dflt_value";
-    public static final String TABLE_COLUMN_PRIMARY_KEY = "pk";
-    public static final String TABLE_COLUMN_SQL = "sql";
+    private static final String TABLE_COLUMN_NAME = "name";
+    private static final String TABLE_COLUMN_TYPE = "type";
+    private static final String TABLE_COLUMN_NOTNULL = "notnull";
+    private static final String TABLE_COLUMN_DEFAULT_VALUE = "dflt_value";
+    private static final String TABLE_COLUMN_PRIMARY_KEY = "pk";
+    private static final String TABLE_COLUMN_SQL = "sql";
+    private static final String ORG_SQLITE_JDBC = "org.sqlite.JDBC";
+    private static final String JDBC_SQLITE = "jdbc:sqlite:";
     private File file;
     private Connection connection;
 
@@ -36,12 +38,12 @@ public class SQLiteEngine {
 
     public void openDB() {
         try {
-            Class.forName("org.sqlite.JDBC");
+            Class.forName(ORG_SQLITE_JDBC);
         } catch (ClassNotFoundException e) {
             System.out.println(e);
         }
         try {
-            connection = DriverManager.getConnection("jdbc:sqlite:" + file.getAbsolutePath());
+            connection = DriverManager.getConnection(JDBC_SQLITE + file.getAbsolutePath());
         } catch (SQLException e) {
             System.out.println(e);
         }
@@ -49,7 +51,7 @@ public class SQLiteEngine {
 
     public void closeDB() {
         try {
-            Class.forName("org.sqlite.JDBC");
+            Class.forName(ORG_SQLITE_JDBC);
         } catch (ClassNotFoundException e) {
             System.out.println(e);
         }
@@ -80,6 +82,10 @@ public class SQLiteEngine {
         } catch (SQLException e) {
             System.out.println(e);
         }
+    }
+
+    public void addTable(String tableName) {
+        executeSQLUpdate("CREATE TABLE " + tableName);
     }
 
     public HashMap<Integer, Table> getTableList() {

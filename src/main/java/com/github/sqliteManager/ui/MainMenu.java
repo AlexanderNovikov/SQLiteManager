@@ -1,7 +1,7 @@
 package com.github.sqliteManager.ui;
 
-import com.github.sqliteManager.core.SQLiteEngine;
 import com.github.sqliteManager.ui.dbTree.DBTreeEngine;
+import com.github.sqliteManager.ui.errors.DatabaseNotOpennedError;
 import com.github.sqliteManager.ui.errors.NothingToSaveError;
 
 import javax.swing.*;
@@ -23,11 +23,13 @@ public class MainMenu {
     private static final String FILE_MENU_LABEL = "File";
     private static final String FILE_MENU_NEW_DATABASE_LABEL = "New Database";
     private static final String FILE_MENU_OPEN_DATABASE_LABEL = "Open Database";
+    private static final String FILE_MENU_RELOAD_DATABASE_LABEL = "Refresh Database";
     private static final String FILE_MENU_SAVE_AS_LABEL = "Save As...";
     private static final String FILE_MENU_CLOSE_DATABASE_LABEL = "Close Database";
     private static final String FILE_MENU_EXIT_PROGRAM_LABEL = "Exit Program";
     private static final String EDIT_MENU_LABEL = "Edit";
     private static final String HELP_MENU_LABEL = "Help";
+
     private JFrame frame;
     private JTree tree;
     private DefaultTreeModel treeModel;
@@ -70,6 +72,16 @@ public class MainMenu {
                 }
             }
         }, KeyStroke.getKeyStroke(KeyEvent.VK_O, CMD_KEY));
+        addMenuItem(mainMenu.getMenu(0), FILE_MENU_RELOAD_DATABASE_LABEL, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (selectedFile != null) {
+                    treeEngine.refreshDBTree();
+                } else {
+                    new DatabaseNotOpennedError();
+                }
+            }
+        }, KeyStroke.getKeyStroke(KeyEvent.VK_R, CMD_KEY));
         addMenuItem(mainMenu.getMenu(0), FILE_MENU_SAVE_AS_LABEL, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -110,11 +122,3 @@ public class MainMenu {
         menu.add(menuItem);
     }
 }
-
-
-//                    String extension = fileChooser.getNewExtention().getDescription();
-//                    if (extension == EXTENSION_DB) {
-//
-//                    } else if (extension == EXTENSION_SQLITE) {
-//
-//                    }
