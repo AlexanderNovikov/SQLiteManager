@@ -56,6 +56,7 @@ public class MainWindow {
         root = new DefaultMutableTreeNode();
         treeModel = new DefaultTreeModel(root);
         tree = new JTree(treeModel);
+        tree.setEditable(true);
         JScrollPane scrollPane = new JScrollPane(tree);
         parentPanel.add(scrollPane, constraints);
     }

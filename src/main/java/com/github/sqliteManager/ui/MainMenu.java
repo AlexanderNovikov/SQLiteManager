@@ -18,8 +18,6 @@ import java.io.File;
  */
 public class MainMenu {
     private static final int CMD_KEY = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
-    private static final String EXTENSION_DB = ".db";
-    private static final String EXTENSION_SQLITE = ".sqlite";
     private static final String FILE_MENU_LABEL = "File";
     private static final String FILE_MENU_NEW_DATABASE_LABEL = "New Database";
     private static final String FILE_MENU_OPEN_DATABASE_LABEL = "Open Database";

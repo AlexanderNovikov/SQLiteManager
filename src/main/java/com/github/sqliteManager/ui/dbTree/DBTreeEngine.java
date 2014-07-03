@@ -3,14 +3,11 @@ package com.github.sqliteManager.ui.dbTree;
 import com.github.sqliteManager.core.SQLiteEngine;
 import com.github.sqliteManager.core.models.Column;
 import com.github.sqliteManager.core.models.Table;
+import com.github.sqliteManager.ui.dbTree.popupMenu.DBTreePopupMenu;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreePath;
-import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.io.File;
 import java.util.Collection;
 
@@ -21,9 +18,6 @@ public class DBTreeEngine {
     private static final String DATA_BASE_NAME_STRING = "Database: ";
     private static final String TABLE_NAME_STRING = "Table: ";
     private static final String COLUMN_NAME_STRING = "Column: ";
-    private static final String DATABASE_LABEL = "Database";
-    private static final String TABLE_LABEL = "Table";
-    private static final String COLUMN_LABEL = "Column";
     private SQLiteEngine sqLiteEngine;
     private DefaultMutableTreeNode root;
     private JTree tree;
@@ -40,7 +34,7 @@ public class DBTreeEngine {
         sqLiteEngine.openDB();
         cleanDBTree();
         fillDBTree();
-        addPopupMenu();
+        new DBTreePopupMenu(tree, sqLiteEngine, this);
     }
 
     public void closeDB() {
@@ -63,6 +57,20 @@ public class DBTreeEngine {
         treeModel.reload();
     }
 
+    public void createTable(String tableName) {
+        sqLiteEngine.createTable(tableName);
+        refreshDBTree();
+    }
+
+    public void removeTable(String tableName) {
+        sqLiteEngine.dropTable(tableName);
+        refreshDBTree();
+    }
+
+    public void createColumn(String columnName) {
+
+    }
+
     public void cleanDBTree() {
         root.setUserObject("");
         root.removeAllChildren();
@@ -70,35 +78,7 @@ public class DBTreeEngine {
     }
 
     public void refreshDBTree() {
-        treeModel.reload();
-    }
-
-    public void addNode(String nodeName) {
-        System.out.println(sqLiteEngine);
-//        sqLiteEngine.addTable(nodeName);
-    }
-
-    public void addPopupMenu() {
-        tree.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                if (SwingUtilities.isRightMouseButton(e)) {
-                    TreePath path = tree.getPathForLocation(e.getX(), e.getY());
-                    if (path != null) {
-                        String label = path.getLastPathComponent().toString().split(":")[0];
-                        if (label.equals(DATABASE_LABEL)) {
-                            DBPopupMenu menu = new DBPopupMenu(root, tree, treeModel);
-                            menu.getMenu().show(tree, e.getX(), e.getY());
-                        } else if (label.equals(TABLE_LABEL)) {
-                            TablePopupMenu menu = new TablePopupMenu();
-                            menu.getMenu().show(tree, e.getX(), e.getY());
-                        } else if (label.equals(COLUMN_LABEL)) {
-                            ColumnPopupMenu menu = new ColumnPopupMenu();
-                            menu.getMenu().show(tree, e.getX(), e.getY());
-                        }
-                    }
-                }
-            }
-        });
+        cleanDBTree();
+        fillDBTree();
     }
 }

@@ -86,8 +86,4 @@ public class FileChooser extends JFileChooser {
     public File getSelectedFile() {
         return selectedFile;
     }
-
-    public FileFilter getNewExtention() {
-        return fileChooser.getFileFilter();
-    }
 }

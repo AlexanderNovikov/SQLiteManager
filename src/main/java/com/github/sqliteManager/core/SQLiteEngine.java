@@ -1,6 +1,7 @@
 package com.github.sqliteManager.core;
 
 import com.github.sqliteManager.core.models.Column;
+import com.github.sqliteManager.core.models.ColumnType;
 import com.github.sqliteManager.core.models.Table;
 
 import java.io.File;
@@ -21,6 +22,13 @@ public class SQLiteEngine {
     private static final String TABLE_COLUMN_SQL = "sql";
     private static final String ORG_SQLITE_JDBC = "org.sqlite.JDBC";
     private static final String JDBC_SQLITE = "jdbc:sqlite:";
+    private static final String DEFAULT_NEW_COLUMN_NAME = " ('New Column' ";
+    private static final String SQL_CREATE_TABLE = "CREATE TABLE";
+    private static final String SQL_SELECT_FROM = "SELECT * FROM";
+    private static final String SQL_WHERE = "WHERE";
+    private static final String SQL_PRAGMA = "PRAGMA";
+    private static final String SQL_DROP_TABLE = "DROP TABLE";
+    private static final String SQL_MASTER_TABLE_NAME = "sqlite_master";
     private File file;
     private Connection connection;
 
@@ -84,8 +92,16 @@ public class SQLiteEngine {
         }
     }
 
-    public void addTable(String tableName) {
-        executeSQLUpdate("CREATE TABLE " + tableName);
+    public void createTable(String tableName) {
+        executeSQLUpdate(SQL_CREATE_TABLE  + " " + tableName + DEFAULT_NEW_COLUMN_NAME + ColumnType.INTEGER + ")");
+    }
+
+    public void dropTable(String tableName) {
+        executeSQLUpdate(SQL_DROP_TABLE + " " + tableName);
+    }
+
+    public void createColumn(String tableName, String columnName, ColumnType columnType, Boolean notNull, String defaultValue) {
+        executeSQLUpdate("ALTER TABLE " + tableName + " ADD COLUMN " + columnName + " " + columnType);
     }
 
     public HashMap<Integer, Table> getTableList() {
@@ -93,7 +109,7 @@ public class SQLiteEngine {
             this.openDB();
         }
         HashMap<Integer, Table> result = new HashMap<Integer, Table>();
-        ResultSet resultSet = this.executeSQLQuery("SELECT * FROM sqlite_master WHERE type = 'table'");
+        ResultSet resultSet = this.executeSQLQuery(SQL_SELECT_FROM + " " + SQL_MASTER_TABLE_NAME + " " + SQL_WHERE + " type = 'table'");
         try {
             int i = 0;
             while (resultSet.next()) {
@@ -110,7 +126,7 @@ public class SQLiteEngine {
             this.openDB();
         }
         HashMap<Integer, Column> result = new HashMap<Integer, Column>();
-        ResultSet resultSet = this.executeSQLQuery("PRAGMA table_info(" + table.getTableName() + ")");
+        ResultSet resultSet = this.executeSQLQuery(SQL_PRAGMA + " table_info(" + table.getTableName() + ")");
         try {
             int i = 0;
             while (resultSet.next()) {
