@@ -1,6 +1,7 @@
-package com.github.sqliteManager.ui;
+package com.github.sqliteManager.ui.fileChooser;
 
 import com.github.sqliteManager.core.SQLiteEngine;
+import com.github.sqliteManager.ui.fileChooser.dialogs.OverwriteFileDialog;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
@@ -14,8 +15,6 @@ public class FileChooser extends JFileChooser {
     private static final String FILE_EXTENSION_DB = "db";
     private static final String FILE_EXTENSION_SQLITE = "sqlite";
     private static final String FILE_EXTENSION_DOT = ".";
-    private static final String SAVE_FILE_DIALOG_TEXT = "Dialog text";
-    private static final String SAVE_FILE_DIALOG_TITLE = "Title";
     private static final String DEFAULT_FILE_NAME = "Untitled";
     private Boolean accept = null;
     private JFileChooser fileChooser;
@@ -44,13 +43,13 @@ public class FileChooser extends JFileChooser {
             selectedFile = fileChooser.getSelectedFile();
             do {
                 if (selectedFile != null && selectedFile.exists()) {
-                    int resultVal = JOptionPane.showConfirmDialog(null, SAVE_FILE_DIALOG_TEXT, SAVE_FILE_DIALOG_TITLE, JOptionPane.YES_NO_OPTION);
-                    if (resultVal == JOptionPane.YES_OPTION) {
+                    int option = new OverwriteFileDialog().getOption();
+                    if (option == JOptionPane.YES_OPTION) {
                         accept = true;
                         overwriteFile();
-                    } else if (resultVal == JOptionPane.NO_OPTION) {
+                    } else if (option == JOptionPane.NO_OPTION) {
                         chooseFileForSaving();
-                    } else if (resultVal == JOptionPane.CLOSED_OPTION) {
+                    } else if (option == JOptionPane.CLOSED_OPTION) {
                         chooseFileForSaving();
                     }
                 } else {

@@ -7,11 +7,11 @@ import javax.swing.*;
  */
 public class DatabaseNotOpennedError {
 
-    private static final String ERROR_DIALOG_TEXT = "Database not openned!";
-    private static final String ERROR_DIALOG_TITLE = "Error!";
+    private static final String DIALOG_TEXT = "Database not openned!";
+    private static final String DIALOG_TITLE = "Error!";
 
     public DatabaseNotOpennedError() {
         JOptionPane errorWindow = new JOptionPane();
-        errorWindow.showMessageDialog(null, ERROR_DIALOG_TEXT, ERROR_DIALOG_TITLE, JOptionPane.WARNING_MESSAGE);
+        errorWindow.showMessageDialog(null, DIALOG_TEXT, DIALOG_TITLE, JOptionPane.ERROR_MESSAGE);
     }
 }

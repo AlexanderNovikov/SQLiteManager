@@ -3,6 +3,7 @@ package com.github.sqliteManager.ui;
 import com.github.sqliteManager.ui.dbTree.DBTreeEngine;
 import com.github.sqliteManager.ui.errors.DatabaseNotOpennedError;
 import com.github.sqliteManager.ui.errors.NothingToSaveError;
+import com.github.sqliteManager.ui.fileChooser.FileChooser;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;

@@ -15,4 +15,5 @@ public class ColumnType {
     public static final String BLOB = "BLOB";
     public static final String NUMERIC = "NUMERIC";
     public static final String DATETIME = "DATETIME";
+    public static final String[] ALL_TYPES = {INTEGER, BOOL, REAL, DOUBLE, FLOAT, CHAR, TEXT, VARCHAR, BLOB, NUMERIC, DATETIME};
 }

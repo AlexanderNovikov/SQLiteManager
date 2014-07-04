@@ -12,7 +12,7 @@ public class CreateTableDialog {
     private String input;
 
     public CreateTableDialog() {
-        input = (String) JOptionPane.showInputDialog(null, DIALOG_TEXT, DIALOG_LABEL, JOptionPane.PLAIN_MESSAGE);
+        input = (String) JOptionPane.showInputDialog(null, DIALOG_TEXT, DIALOG_LABEL, JOptionPane.PLAIN_MESSAGE, null, null, null);
     }
 
     public String getInput() {
