@@ -76,10 +76,4 @@ public class CreateColumnDialog {
         return column;
     }
 
-    public static void main(String[] args) {
-        CreateColumnDialog d = new CreateColumnDialog();
-        if (d.getColumn() != null) {
-            System.out.println(d.getColumn());
-        }
-    }
 }

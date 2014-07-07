@@ -2,6 +2,7 @@ package com.github.sqliteManager.ui.dbTree;
 
 import com.github.sqliteManager.core.SQLiteEngine;
 import com.github.sqliteManager.core.models.Column;
+import com.github.sqliteManager.core.models.ColumnType;
 import com.github.sqliteManager.core.models.Table;
 import com.github.sqliteManager.ui.dbTree.popupMenu.DBTreePopupMenu;
 
@@ -62,13 +63,19 @@ public class DBTreeEngine {
         refreshDBTree();
     }
 
+    public void renameTable(String tableName, String newTableName) {
+        sqLiteEngine.renameTable(tableName, newTableName);
+        refreshDBTree();
+    }
+
     public void removeTable(String tableName) {
         sqLiteEngine.dropTable(tableName);
         refreshDBTree();
     }
 
-    public void createColumn(String columnName) {
-
+    public void createColumn(String tableName, String columnName, String columnType, Boolean notNull, String defaultValue) {
+        sqLiteEngine.createColumn(tableName, columnName, columnType, notNull, defaultValue);
+        refreshDBTree();
     }
 
     public void cleanDBTree() {

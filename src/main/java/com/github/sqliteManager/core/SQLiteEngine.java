@@ -29,6 +29,12 @@ public class SQLiteEngine {
     private static final String SQL_PRAGMA = "PRAGMA";
     private static final String SQL_DROP_TABLE = "DROP TABLE";
     private static final String SQL_MASTER_TABLE_NAME = "sqlite_master";
+    private static final String SQL_NOT_NULL = "NOT NULL";
+    private static final String SQL_DEFAULT = "DEFAULT";
+    private static final String SQL_ALTER_TABLE = "ALTER TABLE";
+    private static final String SQL_ADD_COLUMN = "ADD COLUMN";
+    private static final String SPACE = " ";
+    private static final String SQL_RENAME_TO = "RENAME TO";
     private File file;
     private Connection connection;
 
@@ -96,12 +102,32 @@ public class SQLiteEngine {
         executeSQLUpdate(SQL_CREATE_TABLE  + " " + tableName + DEFAULT_NEW_COLUMN_NAME + ColumnType.INTEGER + ")");
     }
 
+    public void renameTable(String tableName, String newTableName) {
+        String sqlString = null;
+        if (tableName.length() > 0 && newTableName.length() > 0) {
+            sqlString = SQL_ALTER_TABLE + SPACE + tableName + SPACE + SQL_RENAME_TO + SPACE + newTableName;
+
+        }
+        executeSQLUpdate(sqlString);
+        System.out.println(sqlString);
+    }
+
     public void dropTable(String tableName) {
         executeSQLUpdate(SQL_DROP_TABLE + " " + tableName);
     }
 
-    public void createColumn(String tableName, String columnName, ColumnType columnType, Boolean notNull, String defaultValue) {
-        executeSQLUpdate("ALTER TABLE " + tableName + " ADD COLUMN " + columnName + " " + columnType);
+    public void createColumn(String tableName, String columnName, String columnType, Boolean notNull, String defaultValue) {
+        String sqlString = null;
+        if (notNull == true) {
+            sqlString = SQL_ALTER_TABLE + SPACE + tableName + SPACE +
+                    SQL_ADD_COLUMN + SPACE + columnName + SPACE + columnType + SPACE +
+                    SQL_NOT_NULL + SPACE +
+                    SQL_DEFAULT + SPACE + defaultValue;
+        } else {
+            sqlString = SQL_ALTER_TABLE + SPACE + tableName + SPACE +
+                    SQL_ADD_COLUMN + SPACE + columnName + SPACE + columnType;
+        }
+        executeSQLUpdate(sqlString);
     }
 
     public HashMap<Integer, Table> getTableList() {

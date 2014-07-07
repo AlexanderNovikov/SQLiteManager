@@ -3,15 +3,14 @@ package com.github.sqliteManager.ui.dbTree.dialogs;
 import javax.swing.*;
 
 /**
- * Created by alexander on 03/07/14.
+ * Created by alexander on 07/07/14.
  */
-public class CreateTableDialog {
-    private static final String DIALOG_TEXT = "Table name:";
-    private static final String DIALOG_LABEL = "New table";
-
+public class RenameTableDialog {
+    private static final String DIALOG_TEXT = "New name:";
+    private static final String DIALOG_LABEL = "Rename table";
     private String input;
 
-    public CreateTableDialog() {
+    public RenameTableDialog() {
         input = (String)JOptionPane.showInputDialog(null, DIALOG_TEXT, DIALOG_LABEL, JOptionPane.PLAIN_MESSAGE, null, null, null);
     }
 

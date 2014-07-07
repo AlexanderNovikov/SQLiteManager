@@ -18,11 +18,8 @@ public class DBPopupMenu extends DBTreePopupMenu {
     private SQLiteEngine sqLiteEngine;
     private DBTreeEngine dbTreeEngine;
 
-    public DBPopupMenu(JTree tree, SQLiteEngine sqLiteEngine, DBTreeEngine dbTreeEngine) {
-        super(tree, sqLiteEngine, dbTreeEngine);
+    public DBPopupMenu() {
         this.menu = new JPopupMenu();
-        this.sqLiteEngine = sqLiteEngine;
-        this.dbTreeEngine = dbTreeEngine;
         addMenuItems();
     }
 
@@ -33,7 +30,7 @@ public class DBPopupMenu extends DBTreePopupMenu {
                 String tableName = new CreateTableDialog().getInput();
                 if (tableName != null && tableName.length() > 0) {
                     dbTreeEngine.createTable(tableName);
-                } else {
+                } else if (tableName.length() < 0) {
                     new WrongNameError();
                 }
             }
@@ -42,5 +39,17 @@ public class DBPopupMenu extends DBTreePopupMenu {
 
     public JPopupMenu getMenu() {
         return menu;
+    }
+
+    public void setMenu(JPopupMenu menu) {
+        this.menu = menu;
+    }
+
+    public void setSqLiteEngine(SQLiteEngine sqLiteEngine) {
+        this.sqLiteEngine = sqLiteEngine;
+    }
+
+    public void setDbTreeEngine(DBTreeEngine dbTreeEngine) {
+        this.dbTreeEngine = dbTreeEngine;
     }
 }
