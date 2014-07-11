@@ -142,7 +142,11 @@ public class SQLiteEngine {
         renameTable(tableName, tableName + SQL_TEMP_POSTFIX);
         createTable(tableName);
         for (Column column : columnList.values()) {
-            createColumn(newColumnName, column.getColumnName(), column.getColumnType(), column.isNotNull(), column.getColumnDefaultValue());
+            if (column.getColumnName().equals(columnName)) {
+                createColumn(newColumnName, column.getColumnName(), column.getColumnType(), column.isNotNull(), column.getColumnDefaultValue());
+            } else {
+                createColumn(newColumnName, column.getColumnName(), column.getColumnType(), column.isNotNull(), column.getColumnDefaultValue());
+            }
         }
         String sqlString = SQL_INSERT_INTO + SPACE + newColumnName + SPACE + SQL_SELECT_ALL_FROM + columnName;
         executeSQLQuery(sqlString);
