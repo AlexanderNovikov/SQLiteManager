@@ -1,13 +1,18 @@
 package com.github.sqliteManager.ui.dbTree.popupMenu;
 
 import com.github.sqliteManager.core.SQLiteEngine;
+import com.github.sqliteManager.core.models.JSubMenuItem;
 import com.github.sqliteManager.ui.dbTree.DBTreeEngine;
+import com.github.sqliteManager.ui.valuesList.ValuesList;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.tree.TreePath;
+import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -23,17 +28,23 @@ public class DBTreePopupMenu extends JPopupMenu {
     private DBPopupMenu dbPopupMenu;
     private TablePopupMenu tablePopupMenu;
     private ColumnPopupMenu columnPopupMenu;
+    private JTable table;
+    private DefaultTableModel tableModel;
+    private ValuesList valuesList;
 
     public DBTreePopupMenu() {
     }
 
-    public DBTreePopupMenu(JTree tree, SQLiteEngine sqLiteEngine, DBTreeEngine dbTreeEngine) {
+    public DBTreePopupMenu(JTree tree, SQLiteEngine sqLiteEngine, DBTreeEngine dbTreeEngine, JTable table, DefaultTableModel tableModel) {
         this.tree = tree;
         this.sqLiteEngine = sqLiteEngine;
         this.dbTreeEngine = dbTreeEngine;
         this.dbPopupMenu = new DBPopupMenu();
         this.tablePopupMenu = new TablePopupMenu();
         this.columnPopupMenu = new ColumnPopupMenu();
+        this.table = table;
+        this.tableModel = tableModel;
+        this.valuesList = new ValuesList(this.table, this.tableModel);
         addPopupMenu();
     }
 
@@ -50,6 +61,7 @@ public class DBTreePopupMenu extends JPopupMenu {
                             dbPopupMenu.getMenu().show(tree, e.getX(), e.getY());
                         } else if (clickedItemLabel[0].equals(TABLE_LABEL)) {
                             tablePopupMenu.setDbTreeEngine(dbTreeEngine);
+                            tablePopupMenu.setValuesList(valuesList);
                             tablePopupMenu.setClickedItem(getClickedItemName(path));
                             tablePopupMenu.getMenu().show(tree, e.getX(), e.getY());
                         } else if (clickedItemLabel[0].equals(COLUMN_LABEL)) {
@@ -70,9 +82,9 @@ public class DBTreePopupMenu extends JPopupMenu {
         menu.add(menuItem);
     }
 
-    public void addSubMenuItem(JPopupMenu menu, String menuItemName, HashMap<Integer, JMenuItem> subItemsList) {
+    public void addSubMenuItem(JPopupMenu menu, String menuItemName, ArrayList<JSubMenuItem> subItemsList) {
         JMenu subMenu = new JMenu(menuItemName);
-        for (JMenuItem menuItem : subItemsList.values()) {
+        for (JSubMenuItem menuItem : subItemsList) {
             subMenu.add(menuItem);
         }
         menu.add(subMenu);
@@ -86,14 +98,12 @@ public class DBTreePopupMenu extends JPopupMenu {
         } else {
             clickedItemName = lastPart;
         }
-        System.out.println(clickedItemName);
         return clickedItemName;
     }
 
     private String getClickedItemParentName(TreePath path) {
         String lastPart = path.getParentPath().getLastPathComponent().toString().split(":")[1].toString();
         String clickedParentItemName = lastPart.substring(0, lastPart.lastIndexOf(" ("));
-        System.out.println(clickedParentItemName);
         return clickedParentItemName;
     }
 }

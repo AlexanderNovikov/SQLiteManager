@@ -3,7 +3,6 @@ package com.github.sqliteManager.ui.dbTree.dialogs;
 import com.github.sqliteManager.core.models.Column;
 import com.github.sqliteManager.core.models.ColumnType;
 import com.github.sqliteManager.ui.dbTree.errors.NewColumnZeroLengthError;
-import com.github.sqliteManager.ui.dbTree.errors.WrongNameError;
 
 import javax.swing.*;
 import java.awt.event.ItemEvent;
@@ -19,18 +18,17 @@ public class CreateColumnDialog {
     private static final String LABEL_NOT_NULL = "Not Null";
     private static final String LABEL_DEFAULT_VALUE = "Default Value";
     private static final String DIALOG_LABEL = "title";
-    private JOptionPane option;
+    private JOptionPane optionPane;
     private int result;
     private Column column;
     private JPanel panel;
-    private JTextField columnName;
+    private JTextField columnName, columnDefaultValue;
     private JComboBox columnType;
     private JCheckBox notNull;
-    private JTextField columnDefaultValue;
 
     public CreateColumnDialog() {
         panel = new JPanel();
-        option = new JOptionPane();
+        optionPane = new JOptionPane();
         columnName = new JTextField(5);
         columnType = new JComboBox(ColumnType.ALL_TYPES);
         notNull = new JCheckBox();
@@ -57,7 +55,7 @@ public class CreateColumnDialog {
         panel.add(notNull);
         panel.add(new JLabel(LABEL_DEFAULT_VALUE));
         panel.add(columnDefaultValue);
-        result = option.showConfirmDialog(null, panel, DIALOG_LABEL, JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE, null);
+        result = optionPane.showConfirmDialog(null, panel, DIALOG_LABEL, JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE, null);
         if (result == JOptionPane.YES_OPTION) {
             if (columnName.getText().length() > 0 && columnDefaultValue.getText().length() > 0) {
                 column = new Column(columnName.getText(), columnType.getSelectedItem().toString(), notNull.isSelected(), columnDefaultValue.getText(), false);

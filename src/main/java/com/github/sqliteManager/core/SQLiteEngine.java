@@ -7,6 +7,7 @@ import com.github.sqliteManager.core.models.Table;
 import java.io.File;
 import java.sql.*;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -24,7 +25,8 @@ public class SQLiteEngine {
     private static final String JDBC_SQLITE = "jdbc:sqlite:";
     private static final String DEFAULT_NEW_COLUMN_NAME = " ('New Column' ";
     private static final String SQL_CREATE_TABLE = "CREATE TABLE";
-    private static final String SQL_SELECT_FROM = "SELECT * FROM";
+    private static final String SQL_SELECT_ALL_FROM = "SELECT * FROM";
+    private static final String SQL_SELECT_ALL_ROWID_FROM = "SELECT rowid,* FROM";
     private static final String SQL_WHERE = "WHERE";
     private static final String SQL_PRAGMA = "PRAGMA";
     private static final String SQL_DROP_TABLE = "DROP TABLE";
@@ -35,6 +37,11 @@ public class SQLiteEngine {
     private static final String SQL_ADD_COLUMN = "ADD COLUMN";
     private static final String SPACE = " ";
     private static final String SQL_RENAME_TO = "RENAME TO";
+    private static final String SQL_ROWID = "rowid";
+    private static final String SQL_TEMP_POSTFIX = "_temp";
+    private static final String SQL_INSERT_INTO = "INSERT INTO";
+    private static final String SQL_FROM = "FROM";
+    private static final String SQL_SELECT = "SELECT";
     private File file;
     private Connection connection;
 
@@ -130,12 +137,23 @@ public class SQLiteEngine {
         executeSQLUpdate(sqlString);
     }
 
+    public void renameColumn(String tableName, String columnName, String newColumnName) {
+        HashMap<Integer, Column> columnList = getColumnList(new Table(tableName));
+        renameTable(tableName, tableName + SQL_TEMP_POSTFIX);
+        createTable(tableName);
+        for (Column column : columnList.values()) {
+            createColumn(newColumnName, column.getColumnName(), column.getColumnType(), column.isNotNull(), column.getColumnDefaultValue());
+        }
+        String sqlString = SQL_INSERT_INTO + SPACE + newColumnName + SPACE + SQL_SELECT_ALL_FROM + columnName;
+        executeSQLQuery(sqlString);
+    }
+
     public HashMap<Integer, Table> getTableList() {
         if (connection == null) {
             this.openDB();
         }
         HashMap<Integer, Table> result = new HashMap<Integer, Table>();
-        ResultSet resultSet = this.executeSQLQuery(SQL_SELECT_FROM + " " + SQL_MASTER_TABLE_NAME + " " + SQL_WHERE + " type = 'table'");
+        ResultSet resultSet = this.executeSQLQuery(SQL_SELECT_ALL_FROM + " " + SQL_MASTER_TABLE_NAME + " " + SQL_WHERE + " type = 'table'");
         try {
             int i = 0;
             while (resultSet.next()) {
@@ -164,6 +182,39 @@ public class SQLiteEngine {
             }
         } catch (SQLException e) {
             System.out.println(e);
+        }
+        return result;
+    }
+
+    public HashMap<Integer, ArrayList> getAllValues(String tableName) {
+        String sqlString = null;
+        HashMap<Integer, ArrayList> result = new HashMap<Integer, ArrayList>();
+        sqlString = SQL_SELECT_ALL_ROWID_FROM + SPACE + tableName;
+        HashMap<Integer, Column> columnList = this.getColumnList(new Table(tableName));
+        ResultSet resultSet = this.executeSQLQuery(sqlString);
+        try {
+            int i = 1;
+            while (resultSet.next()) {
+                ArrayList row = new ArrayList();
+                row.add(resultSet.getInt(SQL_ROWID));
+                for (Column column : columnList.values()) {
+                    row.add(resultSet.getString(column.getColumnName()));
+                }
+                result.put(i++, row);
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return result;
+    }
+
+    public HashMap<Integer, ArrayList> getValuesRange(String tableName, int start, int end) {
+        HashMap<Integer, ArrayList> allValues = getAllValues(tableName);
+        HashMap<Integer, ArrayList> result = new HashMap<Integer, ArrayList>();
+        for (int i = start; i <= end; i++) {
+            if (allValues.get(i) != null) {
+                result.put(i, allValues.get(i));
+            }
         }
         return result;
     }

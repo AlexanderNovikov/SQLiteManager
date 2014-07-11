@@ -1,5 +1,7 @@
 package com.github.sqliteManager.ui.dbTree.dialogs;
 
+import com.github.sqliteManager.ui.dbTree.errors.WrongTableNameError;
+
 import javax.swing.*;
 
 /**
@@ -11,7 +13,12 @@ public class RenameTableDialog {
     private String input;
 
     public RenameTableDialog() {
-        input = (String)JOptionPane.showInputDialog(null, DIALOG_TEXT, DIALOG_LABEL, JOptionPane.PLAIN_MESSAGE, null, null, null);
+        String resultVal = (String)JOptionPane.showInputDialog(null, DIALOG_TEXT, DIALOG_LABEL, JOptionPane.PLAIN_MESSAGE);
+        if (resultVal.length() > 0) {
+            this.input = resultVal;
+        } else {
+            new WrongTableNameError();
+        }
     }
 
     public String getInput() {

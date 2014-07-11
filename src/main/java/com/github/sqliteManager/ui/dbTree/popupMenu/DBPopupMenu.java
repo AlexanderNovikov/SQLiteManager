@@ -3,7 +3,7 @@ package com.github.sqliteManager.ui.dbTree.popupMenu;
 import com.github.sqliteManager.core.SQLiteEngine;
 import com.github.sqliteManager.ui.dbTree.DBTreeEngine;
 import com.github.sqliteManager.ui.dbTree.dialogs.CreateTableDialog;
-import com.github.sqliteManager.ui.dbTree.errors.WrongNameError;
+import com.github.sqliteManager.ui.dbTree.errors.WrongTableNameError;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -31,7 +31,7 @@ public class DBPopupMenu extends DBTreePopupMenu {
                 if (tableName != null && tableName.length() > 0) {
                     dbTreeEngine.createTable(tableName);
                 } else if (tableName.length() < 0) {
-                    new WrongNameError();
+                    new WrongTableNameError();
                 }
             }
         });

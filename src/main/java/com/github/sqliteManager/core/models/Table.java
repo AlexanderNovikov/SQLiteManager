@@ -7,6 +7,10 @@ public class Table {
     private String tableName;
     private String tableSQL;
 
+    public Table(String tableName) {
+        this.tableName = tableName;
+    }
+
     public Table(String tableName, String tableSQL) {
         this.tableName = tableName;
         this.tableSQL = tableSQL;

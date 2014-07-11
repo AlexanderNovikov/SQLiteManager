@@ -7,10 +7,13 @@ import com.github.sqliteManager.core.models.Table;
 import com.github.sqliteManager.ui.dbTree.popupMenu.DBTreePopupMenu;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 
 /**
  * Created by alexander on 01/07/14.
@@ -23,11 +26,15 @@ public class DBTreeEngine {
     private DefaultMutableTreeNode root;
     private JTree tree;
     private DefaultTreeModel treeModel;
+    private JTable table;
+    private DefaultTableModel tableModel;
 
-    public DBTreeEngine(DefaultMutableTreeNode root, JTree tree, DefaultTreeModel treeModel) {
+    public DBTreeEngine(DefaultMutableTreeNode root, JTree tree, DefaultTreeModel treeModel, JTable table, DefaultTableModel tableModel) {
         this.root = root;
         this.tree = tree;
         this.treeModel = treeModel;
+        this.table = table;
+        this.tableModel = tableModel;
     }
 
     public void openDB(File selectedFile) {
@@ -35,7 +42,7 @@ public class DBTreeEngine {
         sqLiteEngine.openDB();
         cleanDBTree();
         fillDBTree();
-        new DBTreePopupMenu(tree, sqLiteEngine, this);
+        new DBTreePopupMenu(tree, sqLiteEngine, this, table, tableModel);
     }
 
     public void closeDB() {
@@ -68,6 +75,22 @@ public class DBTreeEngine {
         refreshDBTree();
     }
 
+    public HashMap<Integer, Column> getHeaders(String tableName) {
+        return sqLiteEngine.getColumnList(new Table(tableName));
+    }
+
+    public HashMap<Integer, ArrayList> getAllValues(String tableName) {
+        return sqLiteEngine.getAllValues(tableName);
+    }
+
+    public HashMap<Integer, ArrayList> getValuesRange(String tableName, int start, int end) {
+        HashMap<Integer, ArrayList> result = new HashMap<Integer, ArrayList>();
+        if (start >= 0 && end >= 0) {
+            result = sqLiteEngine.getValuesRange(tableName, start, end);
+        }
+        return result;
+    }
+
     public void removeTable(String tableName) {
         sqLiteEngine.dropTable(tableName);
         refreshDBTree();
@@ -76,6 +99,10 @@ public class DBTreeEngine {
     public void createColumn(String tableName, String columnName, String columnType, Boolean notNull, String defaultValue) {
         sqLiteEngine.createColumn(tableName, columnName, columnType, notNull, defaultValue);
         refreshDBTree();
+    }
+
+    public void renameColumn(String tableName, String columnName, String newColumnName) {
+        sqLiteEngine.renameColumn(tableName, columnName, newColumnName);
     }
 
     public void cleanDBTree() {

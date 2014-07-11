@@ -4,6 +4,7 @@ import com.github.sqliteManager.ui.dbTree.DBTreeEngine;
 import com.github.sqliteManager.ui.errors.DatabaseNotOpennedError;
 import com.github.sqliteManager.ui.errors.NothingToSaveError;
 import com.github.sqliteManager.ui.fileChooser.FileChooser;
+import com.github.sqliteManager.ui.valuesList.ValuesList;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -33,23 +34,22 @@ public class MainMenu {
     private JTree tree;
     private DefaultTreeModel treeModel;
     private DefaultMutableTreeNode root;
-    private JMenuBar mainMenu;
+    private static  final JMenuBar mainMenu = new JMenuBar();
     private File selectedFile;
     private FileChooser fileChooser;
     private DBTreeEngine treeEngine;
 
-    public MainMenu(JFrame frame, JTree tree, DefaultTreeModel treeModel, DefaultMutableTreeNode root) {
+    public MainMenu(JFrame frame, JTree tree, DefaultTreeModel treeModel, DefaultMutableTreeNode root, FileChooser fileChooser, DBTreeEngine treeEngine) {
         this.frame = frame;
         this.tree = tree;
         this.treeModel = treeModel;
         this.root = root;
+        this.fileChooser = fileChooser;
+        this.treeEngine = treeEngine;
         initMainMenu();
     }
 
     private void initMainMenu() {
-        mainMenu = new JMenuBar();
-        fileChooser = new FileChooser();
-        treeEngine = new DBTreeEngine(root, tree, treeModel);
         addMenu(mainMenu, FILE_MENU_LABEL);
         addMenuItem(mainMenu.getMenu(0), FILE_MENU_NEW_DATABASE_LABEL, new ActionListener() {
             @Override

@@ -1,17 +1,19 @@
 package com.github.sqliteManager.ui.dbTree.popupMenu;
 
-import com.github.sqliteManager.core.SQLiteEngine;
 import com.github.sqliteManager.core.models.Column;
+import com.github.sqliteManager.core.models.JSubMenuItem;
 import com.github.sqliteManager.ui.dbTree.DBTreeEngine;
 import com.github.sqliteManager.ui.dbTree.dialogs.CreateColumnDialog;
 import com.github.sqliteManager.ui.dbTree.dialogs.DeleteTableDialog;
 import com.github.sqliteManager.ui.dbTree.dialogs.RenameTableDialog;
-import org.omg.CosNaming.NamingContextExtPackage.StringNameHelper;
+import com.github.sqliteManager.ui.dbTree.dialogs.ValuesRangeDialog;
+import com.github.sqliteManager.ui.valuesList.ValuesList;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Created by alexander on 01/07/14.
@@ -20,11 +22,18 @@ public class TablePopupMenu extends DBTreePopupMenu {
     private static final String ADD_COLUMN_LABEL = "Add column";
     private static final String RENAME_TABLE_LABEL = "Rename table";
     private static final String VIEW_CONTENT_LABEL = "View content";
+    private static final String VIEW_CONTENT_10 = "Show first 10";
+    private static final String VIEW_CONTENT_100 = "Show first 100";
+    private static final String VIEW_CONTENT_1000 = "Show first 1000";
+    private static final String VIEW_CONTENT_CUSTOM = "Show range of...";
+    private static final String VIEW_CONTENT_ALL = "Show all";
     private static final String DELETE_TABLE_LABEL = "Delete table";
+
     private JPopupMenu menu;
     private DBTreeEngine dbTreeEngine;
     private String clickedItem;
-    private HashMap<Integer, JMenuItem> contentSubMenu;
+    private ValuesList valuesList;
+
 
     public TablePopupMenu() {
         this.menu = new JPopupMenu();
@@ -42,13 +51,51 @@ public class TablePopupMenu extends DBTreePopupMenu {
         addMenuItem(menu, RENAME_TABLE_LABEL, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String input = new RenameTableDialog().getInput();
-                if (input != null && input.length() > 0) {
-                    dbTreeEngine.renameTable(clickedItem, input);
+                String newTableName = new RenameTableDialog().getInput();
+                if (newTableName != null && newTableName.length() > 0) {
+                    dbTreeEngine.renameTable(clickedItem, newTableName);
                 }
             }
         });
-        addSubMenuItem(menu, VIEW_CONTENT_LABEL, getContentSubMenu());
+        addSubMenuItem(menu, VIEW_CONTENT_LABEL, new ArrayList<JSubMenuItem>(Arrays.asList(new JSubMenuItem(VIEW_CONTENT_10, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                valuesList.setHeaders(dbTreeEngine.getHeaders(clickedItem));
+                valuesList.setData(dbTreeEngine.getValuesRange(clickedItem, 0, 10));
+                valuesList.fillTable();
+            }
+        }), new JSubMenuItem(VIEW_CONTENT_100, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                valuesList.setHeaders(dbTreeEngine.getHeaders(clickedItem));
+                valuesList.setData(dbTreeEngine.getValuesRange(clickedItem, 0, 100));
+                valuesList.fillTable();
+            }
+        }),new JSubMenuItem(VIEW_CONTENT_1000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                valuesList.setHeaders(dbTreeEngine.getHeaders(clickedItem));
+                valuesList.setData(dbTreeEngine.getValuesRange(clickedItem, 0, 1000));
+                valuesList.fillTable();
+            }
+        }), new JSubMenuItem(VIEW_CONTENT_CUSTOM, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ValuesRangeDialog resultVal = new ValuesRangeDialog();
+                if (resultVal != null) {
+                    valuesList.setHeaders(dbTreeEngine.getHeaders(clickedItem));
+                    valuesList.setData(dbTreeEngine.getValuesRange(clickedItem, resultVal.getStart(), resultVal.getEnd()));
+                    valuesList.fillTable();
+                }
+            }
+        }), new JSubMenuItem(VIEW_CONTENT_ALL, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                valuesList.setHeaders(dbTreeEngine.getHeaders(clickedItem));
+                valuesList.setData(dbTreeEngine.getAllValues(clickedItem));
+                valuesList.fillTable();
+            }
+        }))));
         addMenuItem(menu, DELETE_TABLE_LABEL, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -64,28 +111,6 @@ public class TablePopupMenu extends DBTreePopupMenu {
         return menu;
     }
 
-    public HashMap<Integer, JMenuItem> getContentSubMenu() {
-        contentSubMenu = new HashMap<Integer, JMenuItem>();
-        int i = 0;
-        JMenuItem menuItem10 = new JMenuItem("10");
-        menuItem10.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-            }
-        });
-        contentSubMenu.put(i++, menuItem10);
-        JMenuItem menuItem100 = new JMenuItem("100");
-        contentSubMenu.put(i++, menuItem100);
-        JMenuItem menuItem1000 = new JMenuItem("1000");
-        contentSubMenu.put(i++, menuItem1000);
-        JMenuItem menuItemCustom = new JMenuItem("Custom");
-        contentSubMenu.put(i++, menuItemCustom);
-        JMenuItem menuItemAll = new JMenuItem("All");
-        contentSubMenu.put(i++, menuItemAll);
-        return contentSubMenu;
-    }
-
     public void setMenu(JPopupMenu menu) {
         this.menu = menu;
     }
@@ -96,5 +121,13 @@ public class TablePopupMenu extends DBTreePopupMenu {
 
     public void setClickedItem(String clickedItem) {
         this.clickedItem = clickedItem;
+    }
+
+    public ValuesList getValuesList() {
+        return valuesList;
+    }
+
+    public void setValuesList(ValuesList valuesList) {
+        this.valuesList = valuesList;
     }
 }

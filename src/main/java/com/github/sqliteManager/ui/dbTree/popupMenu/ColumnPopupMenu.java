@@ -2,6 +2,7 @@ package com.github.sqliteManager.ui.dbTree.popupMenu;
 
 import com.github.sqliteManager.core.SQLiteEngine;
 import com.github.sqliteManager.ui.dbTree.DBTreeEngine;
+import com.github.sqliteManager.ui.dbTree.dialogs.RenameColumnDialog;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -27,6 +28,22 @@ public class ColumnPopupMenu extends DBTreePopupMenu {
         addMenuItem(menu, RENAME_COLUMN_LABEL, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                String newColumnName = new RenameColumnDialog().getInput();
+                if (newColumnName != null && newColumnName.length() > 0) {
+                    dbTreeEngine.renameColumn(clickedItemParent, clickedItem, newColumnName);
+                }
+            }
+        });
+        addMenuItem(menu, "Change type", new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
+        addMenuItem(menu, "Change default value", new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
             }
         });
         addMenuItem(menu, DELETE_COLUMN_LABEL, new ActionListener() {

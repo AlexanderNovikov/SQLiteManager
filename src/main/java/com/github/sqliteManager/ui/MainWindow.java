@@ -1,6 +1,12 @@
 package com.github.sqliteManager.ui;
 
+import com.github.sqliteManager.ui.dbTree.DBTreeEngine;
+import com.github.sqliteManager.ui.fileChooser.FileChooser;
+import com.github.sqliteManager.ui.valuesList.ValuesList;
+
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import java.awt.*;
@@ -18,9 +24,12 @@ public class MainWindow {
     private DefaultMutableTreeNode root;
     private DefaultTreeModel treeModel;
     private JTree tree;
-    private JList list;
+    private DefaultTableModel tableModel = new DefaultTableModel();
+    private JTable table = new JTable(tableModel);
     private JButton buttonExecute, buttonClean;
     private JTextPane textPane1;
+    private static final FileChooser fileChooser = new FileChooser();
+    private DBTreeEngine treeEngine;
 
 
     public MainWindow() {
@@ -41,7 +50,8 @@ public class MainWindow {
         mainPanel.add(rightPart,constraints);
 
         addDBPanel(leftPart);
-        new MainMenu(frame, tree, treeModel, root);
+        treeEngine = new DBTreeEngine(root, tree, treeModel, table, tableModel); //TODO rewrite using setters too much args in constructor
+        new MainMenu(frame, tree, treeModel, root, fileChooser, treeEngine); //TODO rewrite using setters too much args in constructor
         addSQLTextField(rightPart);
         addSQLButtons(rightPart);
         addValuesList(rightPart);
@@ -85,8 +95,7 @@ public class MainWindow {
     }
 
     private void addValuesList(JPanel parentPanel) {
-        list = new JList();
-        JScrollPane scrollPane = new JScrollPane(list);
+        JScrollPane scrollPane = new JScrollPane(table);
         constraints.weightx = 1.0;
         constraints.weighty = 0.7;
         constraints.gridx = 0;
