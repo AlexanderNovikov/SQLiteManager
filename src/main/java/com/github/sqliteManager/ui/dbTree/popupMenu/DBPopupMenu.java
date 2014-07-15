@@ -24,17 +24,17 @@ public class DBPopupMenu extends DBTreePopupMenu {
     }
 
     public void addMenuItems() {
-        addMenuItem(menu, ADD_TABLE_LABEL, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String tableName = new CreateTableDialog().getInput();
-                if (tableName != null && tableName.length() > 0) {
-                    dbTreeEngine.createTable(tableName);
-                } else if (tableName.length() < 0) {
-                    new WrongTableNameError();
-                }
-            }
-        });
+//        addMenuItem(menu, ADD_TABLE_LABEL, new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                String tableName = new CreateTableDialog();
+//                if (tableName != null && tableName.length() > 0) {
+//                    dbTreeEngine.createTable(tableName);
+//                } else if (tableName.length() < 0) {
+//                    new WrongTableNameError();
+//                }
+//            }
+//        });
     }
 
     public JPopupMenu getMenu() {

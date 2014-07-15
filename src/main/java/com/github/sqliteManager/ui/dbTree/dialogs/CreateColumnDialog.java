@@ -24,21 +24,21 @@ public class CreateColumnDialog {
     private JPanel panel;
     private JTextField columnName, columnDefaultValue;
     private JComboBox columnType;
-    private JCheckBox notNull;
+    private JCheckBox isNull;
 
     public CreateColumnDialog() {
         panel = new JPanel();
         optionPane = new JOptionPane();
         columnName = new JTextField(5);
-        columnType = new JComboBox(ColumnType.ALL_TYPES);
-        notNull = new JCheckBox();
-        notNull.addItemListener(new ItemListener() {
+        columnType = new JComboBox<String>(ColumnType.ALL_TYPES);
+        isNull = new JCheckBox();
+        isNull.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
-                if (notNull.isSelected() == true) {
+                if (isNull.isSelected()) {
                     columnDefaultValue.setEditable(true);
                     panel.updateUI();
-                } else if (notNull.isSelected() == false) {
+                } else {
                     columnDefaultValue.setEditable(false);
                     panel.updateUI();
                 }
@@ -52,13 +52,13 @@ public class CreateColumnDialog {
         panel.add(new JLabel(LABEL_TYPE));
         panel.add(columnType);
         panel.add(new JLabel(LABEL_NOT_NULL));
-        panel.add(notNull);
+        panel.add(isNull);
         panel.add(new JLabel(LABEL_DEFAULT_VALUE));
         panel.add(columnDefaultValue);
         result = optionPane.showConfirmDialog(null, panel, DIALOG_LABEL, JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE, null);
         if (result == JOptionPane.YES_OPTION) {
             if (columnName.getText().length() > 0 && columnDefaultValue.getText().length() > 0) {
-                column = new Column(columnName.getText(), columnType.getSelectedItem().toString(), notNull.isSelected(), columnDefaultValue.getText(), false);
+                column = new Column(columnName.getText(), columnType.getSelectedItem().toString(), isNull.isSelected(), columnDefaultValue.getText(), false);
             } else {
                 error();
             }

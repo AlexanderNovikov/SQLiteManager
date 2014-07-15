@@ -116,7 +116,6 @@ public class SQLiteEngine {
 
         }
         executeSQLUpdate(sqlString);
-        System.out.println(sqlString);
     }
 
     public void dropTable(String tableName) {
@@ -143,13 +142,13 @@ public class SQLiteEngine {
         createTable(tableName);
         for (Column column : columnList.values()) {
             if (column.getColumnName().equals(columnName)) {
-                createColumn(newColumnName, column.getColumnName(), column.getColumnType(), column.isNotNull(), column.getColumnDefaultValue());
+                createColumn(tableName, newColumnName, column.getColumnType(), column.isNotNull(), column.getColumnDefaultValue());
             } else {
-                createColumn(newColumnName, column.getColumnName(), column.getColumnType(), column.isNotNull(), column.getColumnDefaultValue());
+                createColumn(tableName, column.getColumnName(), column.getColumnType(), column.isNotNull(), column.getColumnDefaultValue());
             }
         }
-        String sqlString = SQL_INSERT_INTO + SPACE + newColumnName + SPACE + SQL_SELECT_ALL_FROM + columnName;
-        executeSQLQuery(sqlString);
+//        String sqlString = SQL_INSERT_INTO + SPACE + newColumnName + SPACE + SQL_SELECT_ALL_FROM + columnName;
+//        executeSQLQuery(sqlString);
     }
 
     public HashMap<Integer, Table> getTableList() {

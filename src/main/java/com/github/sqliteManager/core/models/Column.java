@@ -11,6 +11,9 @@ public class Column {
     private String columnDefaultValue;
     private boolean primaryKey;
 
+    public Column() {
+    }
+
     public Column(String columnName, String columnType, boolean notNull, String columnDefaultValue, boolean primaryKey) {
         this.columnName = columnName;
         this.columnType = columnType;

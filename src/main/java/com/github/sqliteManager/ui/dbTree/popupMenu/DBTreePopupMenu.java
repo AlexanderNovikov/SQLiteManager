@@ -98,12 +98,14 @@ public class DBTreePopupMenu extends JPopupMenu {
         } else {
             clickedItemName = lastPart;
         }
+        System.out.println(clickedItemName);
         return clickedItemName;
     }
 
     private String getClickedItemParentName(TreePath path) {
         String lastPart = path.getParentPath().getLastPathComponent().toString().split(":")[1].toString();
         String clickedParentItemName = lastPart.substring(0, lastPart.lastIndexOf(" ("));
+        System.out.println(clickedParentItemName);
         return clickedParentItemName;
     }
 }
