@@ -42,6 +42,7 @@ public class SQLiteEngine {
     private static final String SQL_INSERT_INTO = "INSERT INTO";
     private static final String SQL_FROM = "FROM";
     private static final String SQL_SELECT = "SELECT";
+    private static final String COMMA = ",";
     private File file;
     private Connection connection;
 
@@ -105,8 +106,17 @@ public class SQLiteEngine {
         }
     }
 
-    public void createTable(String tableName) {
-        executeSQLUpdate(SQL_CREATE_TABLE  + " " + tableName + DEFAULT_NEW_COLUMN_NAME + ColumnType.INTEGER + ")");
+    public void createTable(Table table) {
+        String sqlString = SQL_CREATE_TABLE + SPACE + table.getTableName() + "(";
+        for (Column column : table.getColumns().values()) {
+            sqlString += column.getColumnName() + SPACE + column.getColumnType();
+            if (column.isNotNull()) {
+                sqlString += SPACE + SQL_NOT_NULL + SPACE + SQL_DEFAULT + column.getColumnDefaultValue();
+            }
+        }
+        sqlString += ")";
+        System.out.println(sqlString);
+//        executeSQLUpdate(sqlString);
     }
 
     public void renameTable(String tableName, String newTableName) {
@@ -137,16 +147,16 @@ public class SQLiteEngine {
     }
 
     public void renameColumn(String tableName, String columnName, String newColumnName) {
-        HashMap<Integer, Column> columnList = getColumnList(new Table(tableName));
-        renameTable(tableName, tableName + SQL_TEMP_POSTFIX);
-        createTable(tableName);
-        for (Column column : columnList.values()) {
-            if (column.getColumnName().equals(columnName)) {
-                createColumn(tableName, newColumnName, column.getColumnType(), column.isNotNull(), column.getColumnDefaultValue());
-            } else {
-                createColumn(tableName, column.getColumnName(), column.getColumnType(), column.isNotNull(), column.getColumnDefaultValue());
-            }
-        }
+//        HashMap<Integer, Column> columnList = getColumnList(new Table(tableName));
+//        renameTable(tableName, tableName + SQL_TEMP_POSTFIX);
+//        createTable(tableName);
+//        for (Column column : columnList.values()) {
+//            if (column.getColumnName().equals(columnName)) {
+//                createColumn(tableName, newColumnName, column.getColumnType(), column.isNotNull(), column.getColumnDefaultValue());
+//            } else {
+//                createColumn(tableName, column.getColumnName(), column.getColumnType(), column.isNotNull(), column.getColumnDefaultValue());
+//            }
+//        }
 //        String sqlString = SQL_INSERT_INTO + SPACE + newColumnName + SPACE + SQL_SELECT_ALL_FROM + columnName;
 //        executeSQLQuery(sqlString);
     }

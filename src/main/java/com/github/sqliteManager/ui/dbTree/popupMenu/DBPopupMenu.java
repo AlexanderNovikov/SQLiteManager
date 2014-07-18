@@ -1,6 +1,7 @@
 package com.github.sqliteManager.ui.dbTree.popupMenu;
 
 import com.github.sqliteManager.core.SQLiteEngine;
+import com.github.sqliteManager.core.models.Table;
 import com.github.sqliteManager.ui.dbTree.DBTreeEngine;
 import com.github.sqliteManager.ui.dbTree.dialogs.CreateTableDialog;
 import com.github.sqliteManager.ui.dbTree.errors.WrongTableNameError;
@@ -24,17 +25,13 @@ public class DBPopupMenu extends DBTreePopupMenu {
     }
 
     public void addMenuItems() {
-//        addMenuItem(menu, ADD_TABLE_LABEL, new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                String tableName = new CreateTableDialog();
-//                if (tableName != null && tableName.length() > 0) {
-//                    dbTreeEngine.createTable(tableName);
-//                } else if (tableName.length() < 0) {
-//                    new WrongTableNameError();
-//                }
-//            }
-//        });
+        addMenuItem(menu, ADD_TABLE_LABEL, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Table table = new CreateTableDialog().getTable();
+                dbTreeEngine.createTable(table);
+            }
+        });
     }
 
     public JPopupMenu getMenu() {

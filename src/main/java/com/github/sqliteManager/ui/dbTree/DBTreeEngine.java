@@ -65,9 +65,11 @@ public class DBTreeEngine {
         treeModel.reload();
     }
 
-    public void createTable(String tableName) {
-        sqLiteEngine.createTable(tableName);
-        refreshDBTree();
+    public void createTable(Table table) {
+        if (table != null) {
+            sqLiteEngine.createTable(table);
+            refreshDBTree();
+        }
     }
 
     public void renameTable(String tableName, String newTableName) {
