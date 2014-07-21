@@ -22,6 +22,11 @@ public class Table {
         this.tableSQL = tableSQL;
     }
 
+    public Table(String tableName, HashMap<Integer, Column> columns) {
+        this.tableName = tableName;
+        this.columns = columns;
+    }
+
     public Table(String tableName, HashMap<Integer, Column> columns, String tableSQL) {
         this.tableName = tableName;
         this.columns = columns;

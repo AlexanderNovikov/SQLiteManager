@@ -1,9 +1,7 @@
 package com.github.sqliteManager.ui.dbTree;
 
 import com.github.sqliteManager.core.SQLiteEngine;
-import com.github.sqliteManager.core.models.Column;
-import com.github.sqliteManager.core.models.ColumnType;
-import com.github.sqliteManager.core.models.Table;
+import com.github.sqliteManager.core.models.*;
 import com.github.sqliteManager.ui.dbTree.popupMenu.DBTreePopupMenu;
 
 import javax.swing.*;
@@ -23,13 +21,13 @@ public class DBTreeEngine {
     private static final String TABLE_NAME_STRING = "Table: ";
     private static final String COLUMN_NAME_STRING = "Column: ";
     private SQLiteEngine sqLiteEngine;
-    private DefaultMutableTreeNode root;
+    private MyDefaultMutableTreeNode root;
     private JTree tree;
     private DefaultTreeModel treeModel;
     private JTable table;
     private DefaultTableModel tableModel;
 
-    public DBTreeEngine(DefaultMutableTreeNode root, JTree tree, DefaultTreeModel treeModel, JTable table, DefaultTableModel tableModel) {
+    public DBTreeEngine(MyDefaultMutableTreeNode root, JTree tree, DefaultTreeModel treeModel, JTable table, DefaultTableModel tableModel) {
         this.root = root;
         this.tree = tree;
         this.treeModel = treeModel;
@@ -52,14 +50,13 @@ public class DBTreeEngine {
 
     public void fillDBTree() {
         Collection<Table> tables = sqLiteEngine.getTableList().values();
-        root.setUserObject(DATA_BASE_NAME_STRING + sqLiteEngine.getFile().getName() + " (" + tables.size() + ")");
+        root.setUserObject(new Database(sqLiteEngine.getFile(), tables.size()));
         for (Table table : tables) {
             Collection<Column> columns = sqLiteEngine.getColumnList(table).values();
-            DefaultMutableTreeNode tableNode = new DefaultMutableTreeNode(TABLE_NAME_STRING + table.getTableName() + " (" + columns.size() + ")");
+            MyDefaultMutableTreeNode tableNode = new MyDefaultMutableTreeNode(table);
             root.add(tableNode);
             for (Column column : columns) {
-                DefaultMutableTreeNode columnNode = new DefaultMutableTreeNode(COLUMN_NAME_STRING + column.getColumnName());
-                tableNode.add(columnNode);
+                tableNode.add(new MyDefaultMutableTreeNode(column));
             }
         }
         treeModel.reload();

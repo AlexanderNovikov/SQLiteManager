@@ -5,9 +5,6 @@ import com.github.sqliteManager.core.models.ColumnType;
 import com.github.sqliteManager.core.models.Table;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreeModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -33,21 +30,14 @@ public class CreateTableDialog extends JDialog {
     private static final String LABEL_CREATE_TABLE = "Create table";
     private static final String LABEL_CANCEL = "Cancel";
 
-    private JPanel mainPanel, tablePanel, columnPanel/*, columnListPanel*/;
+    private JPanel mainPanel, tablePanel, columnPanel, columnList, columnListPanel;
     private JTextField tableName, columnName, columnDefaultValue;
     private JComboBox<String> columnType;
     private JCheckBox isNotNull;
     private JButton addColumnButton, removeColumnButton, createButton, cancelButton;
-    private JScrollPane scrollPane;
     private final ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
     private Table table;
     private int result;
-
-    private JTable columnListPanel;
-
-    public static void main(String[] args) {
-        new CreateTableDialog();
-    }
 
     public CreateTableDialog() {
         mainPanel = new JPanel();
@@ -65,7 +55,7 @@ public class CreateTableDialog extends JDialog {
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.PLAIN_MESSAGE,
                 null,
-                new JButton[]{cancelButton, createButton},
+                new JButton[]{createButton, cancelButton},
                 null
         );
         if (result == JOptionPane.YES_OPTION) {
@@ -77,8 +67,7 @@ public class CreateTableDialog extends JDialog {
         scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
-                getData();
-                if (checkColumnNameFields() && checkTableNameField() && columnListPanel.getComponents().length > 0) {
+                if (checkColumnNameFields() && checkTableNameField() && columnList.getComponents().length > 1) {
                     createButton.setEnabled(true);
                 } else {
                     createButton.setEnabled(false);
@@ -116,17 +105,17 @@ public class CreateTableDialog extends JDialog {
     }
 
     private void addColumnListPanel() {
-//        columnListPanel = new JPanel();
-//        columnListPanel.setLayout(new BoxLayout(columnListPanel, BoxLayout.Y_AXIS));
-//        columnListPanel.setPreferredSize(new Dimension(830, 290));
-//        scrollPane = new JScrollPane(columnListPanel);
-//        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-//        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-//        mainPanel.add(scrollPane);
-        DefaultTableModel tableModel = new DefaultTableModel();
-        columnListPanel = new JTable(tableModel);
-        scrollPane = new JScrollPane(columnListPanel);
-        tableModel.addRow(new String[]{"Blah"});
+        columnListPanel = new JPanel();
+        columnListPanel.setPreferredSize(new Dimension(850,300));
+        columnListPanel.setLayout(new BorderLayout());
+        columnList = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
+        gbc.weightx = 1;
+        gbc.weighty = 1;
+        columnList.add(new JPanel(), gbc);
+        columnListPanel.add(new JScrollPane(columnList));
+        mainPanel.add(columnListPanel);
     }
 
     private void addButtons() {
@@ -145,7 +134,7 @@ public class CreateTableDialog extends JDialog {
             @Override
             public void actionPerformed(ActionEvent e) {
                 JOptionPane pane = getOptionPane((JComponent)e.getSource());
-                pane.setValue(createButton);
+                pane.setValue(cancelButton);
                 scheduledExecutorService.shutdown();
             }
         });
@@ -187,8 +176,8 @@ public class CreateTableDialog extends JDialog {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Object component = e.getSource();
-                columnListPanel.remove(((JButton) component).getParent());
-                columnListPanel.updateUI();
+                columnList.remove(((JButton) component).getParent());
+                columnList.updateUI();
             }
         });
         columnPanel.add(new JLabel(LABEL_COLUMN_NAME));
@@ -200,8 +189,13 @@ public class CreateTableDialog extends JDialog {
         columnPanel.add(new JLabel(LABEL_DEFAULT_VALUE));
         columnPanel.add(columnDefaultValue);
         columnPanel.add(removeColumnButton);
-        columnListPanel.add(columnPanel/*, BorderLayout.SOUTH*/);
-        columnListPanel.validate();
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
+        gbc.weightx = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        columnList.add(columnPanel, gbc, 0);
+        columnListPanel.revalidate();
+        columnListPanel.repaint();
         createButton.setEnabled(false);
     }
 
@@ -218,7 +212,7 @@ public class CreateTableDialog extends JDialog {
     private Boolean checkColumnNameFields() {
         ArrayList<Boolean> booleans = new ArrayList<Boolean>();
         Boolean result = null;
-        for (Component jPanel : columnListPanel.getComponents()) {
+        for (Component jPanel : columnList.getComponents()) {
             if (jPanel instanceof JPanel) {
                 for (Component component : ((JPanel) jPanel).getComponents()) {
                     if (component instanceof JTextField) {
@@ -244,8 +238,8 @@ public class CreateTableDialog extends JDialog {
         HashMap<Integer, Column> columns = new HashMap<Integer, Column>();
         Column column = null;
         int i = 0;
-        for (Component jPanel : columnListPanel.getComponents()) {
-            if (jPanel instanceof JPanel) {
+        for (Component jPanel : columnList.getComponents()) {
+            if (jPanel instanceof JPanel && ((JPanel) jPanel).getComponents().length > 1) {
                 column = new Column();
                 for (Component component : ((JPanel) jPanel).getComponents()) {
                     if (component instanceof JTextField) {
@@ -269,5 +263,9 @@ public class CreateTableDialog extends JDialog {
 
     public Table getTable() {
         return table;
+    }
+
+    public static void main(String[] args) {
+        new CreateTableDialog();
     }
 }

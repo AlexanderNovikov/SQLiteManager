@@ -1,5 +1,6 @@
 package com.github.sqliteManager.ui;
 
+import com.github.sqliteManager.core.models.MyDefaultMutableTreeNode;
 import com.github.sqliteManager.ui.dbTree.DBTreeEngine;
 import com.github.sqliteManager.ui.fileChooser.FileChooser;
 import com.github.sqliteManager.ui.valuesList.ValuesList;
@@ -21,7 +22,7 @@ public class MainWindow {
     private JFrame frame;
     private JPanel mainPanel, leftPart ,rightPart;
     private GridBagConstraints constraints;
-    private DefaultMutableTreeNode root;
+    private MyDefaultMutableTreeNode root;
     private DefaultTreeModel treeModel;
     private JTree tree;
     private DefaultTableModel tableModel = new DefaultTableModel();
@@ -63,7 +64,7 @@ public class MainWindow {
     }
 
     private void addDBPanel(JPanel parentPanel) {
-        root = new DefaultMutableTreeNode();
+        root = new MyDefaultMutableTreeNode();
         treeModel = new DefaultTreeModel(root);
         tree = new JTree(treeModel);
         tree.setEditable(true);
