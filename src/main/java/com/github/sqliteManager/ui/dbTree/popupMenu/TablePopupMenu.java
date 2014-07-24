@@ -2,6 +2,7 @@ package com.github.sqliteManager.ui.dbTree.popupMenu;
 
 import com.github.sqliteManager.core.models.Column;
 import com.github.sqliteManager.core.models.JSubMenuItem;
+import com.github.sqliteManager.core.models.Table;
 import com.github.sqliteManager.ui.dbTree.DBTreeEngine;
 import com.github.sqliteManager.ui.dbTree.dialogs.CreateColumnDialog;
 import com.github.sqliteManager.ui.dbTree.dialogs.DeleteTableDialog;
@@ -31,7 +32,7 @@ public class TablePopupMenu extends DBTreePopupMenu {
 
     private JPopupMenu menu;
     private DBTreeEngine dbTreeEngine;
-    private String clickedItem;
+    private Table clickedItem;
     private ValuesList valuesList;
 
 
@@ -45,7 +46,7 @@ public class TablePopupMenu extends DBTreePopupMenu {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Column column = new CreateColumnDialog().getColumn();
-                dbTreeEngine.createColumn(clickedItem, column.getColumnName(), column.getColumnType(), column.isNotNull(), column.getColumnDefaultValue());
+                dbTreeEngine.createColumn(clickedItem, column);
             }
         });
         addMenuItem(menu, RENAME_TABLE_LABEL, new ActionListener() {
@@ -119,7 +120,7 @@ public class TablePopupMenu extends DBTreePopupMenu {
         this.dbTreeEngine = dbTreeEngine;
     }
 
-    public void setClickedItem(String clickedItem) {
+    public void setClickedItem(Table clickedItem) {
         this.clickedItem = clickedItem;
     }
 

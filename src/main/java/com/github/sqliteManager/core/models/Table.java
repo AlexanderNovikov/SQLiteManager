@@ -17,11 +17,6 @@ public class Table {
         this.tableName = tableName;
     }
 
-    public Table(String tableName, String tableSQL) {
-        this.tableName = tableName;
-        this.tableSQL = tableSQL;
-    }
-
     public Table(String tableName, HashMap<Integer, Column> columns) {
         this.tableName = tableName;
         this.columns = columns;

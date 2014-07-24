@@ -1,6 +1,8 @@
 package com.github.sqliteManager.ui.dbTree.popupMenu;
 
 import com.github.sqliteManager.core.SQLiteEngine;
+import com.github.sqliteManager.core.models.Column;
+import com.github.sqliteManager.core.models.Table;
 import com.github.sqliteManager.ui.dbTree.DBTreeEngine;
 import com.github.sqliteManager.ui.dbTree.dialogs.RenameColumnDialog;
 
@@ -16,8 +18,8 @@ public class ColumnPopupMenu extends DBTreePopupMenu {
     private static final String DELETE_COLUMN_LABEL = "Delete column";
     private JPopupMenu menu;
     private DBTreeEngine dbTreeEngine;
-    private String clickedItem;
-    private String clickedItemParent;
+    private Column clickedItem;
+    private Table clickedItemParent;
 
     public ColumnPopupMenu() {
         this.menu = new JPopupMenu();
@@ -66,11 +68,11 @@ public class ColumnPopupMenu extends DBTreePopupMenu {
         this.dbTreeEngine = dbTreeEngine;
     }
 
-    public void setClickedItem(String clickedItem) {
+    public void setClickedItem(Column clickedItem) {
         this.clickedItem = clickedItem;
     }
 
-    public void setClickedItemParent(String clickedItemParent) {
+    public void setClickedItemParent(Table clickedItemParent) {
         this.clickedItemParent = clickedItemParent;
     }
 }

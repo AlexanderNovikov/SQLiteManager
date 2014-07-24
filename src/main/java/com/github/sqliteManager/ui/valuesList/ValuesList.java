@@ -1,20 +1,9 @@
 package com.github.sqliteManager.ui.valuesList;
 
-import com.github.sqliteManager.core.SQLiteEngine;
 import com.github.sqliteManager.core.models.Column;
-import com.github.sqliteManager.core.models.Table;
-import com.sun.deploy.util.ArrayUtil;
-import com.sun.tools.javac.util.ArrayUtils;
 
 import javax.swing.*;
-import javax.swing.table.AbstractTableModel;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableModel;
-import javax.swing.text.Element;
-import java.awt.*;
-import java.io.File;
-import java.sql.Array;
+import javax.swing.table.*;
 import java.util.*;
 
 /**

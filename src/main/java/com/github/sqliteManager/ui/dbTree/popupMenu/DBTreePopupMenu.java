@@ -4,19 +4,14 @@ import com.github.sqliteManager.core.SQLiteEngine;
 import com.github.sqliteManager.core.models.*;
 import com.github.sqliteManager.ui.dbTree.DBTreeEngine;
 import com.github.sqliteManager.ui.valuesList.ValuesList;
-import com.sun.istack.internal.NotNull;
-import javafx.scene.control.Tab;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.TreePath;
-import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * Created by alexander on 01/07/14.
@@ -69,14 +64,14 @@ public class DBTreePopupMenu extends JPopupMenu {
                                     Table tb = (Table) ((DefaultMutableTreeNode) component).getUserObject();
                                     tablePopupMenu.setDbTreeEngine(dbTreeEngine);
                                     tablePopupMenu.setValuesList(valuesList);
-                                    tablePopupMenu.setClickedItem(tb.getTableName());
+                                    tablePopupMenu.setClickedItem(tb);
                                     tablePopupMenu.getMenu().show(tree, e.getX(), e.getY());
                                     break;
                                 case 0:
                                     Column col = (Column) ((DefaultMutableTreeNode) component).getUserObject();
                                     columnPopupMenu.setDbTreeEngine(dbTreeEngine);
-                                    columnPopupMenu.setClickedItem(col.getColumnName());
-                                    columnPopupMenu.setClickedItemParent(((Table)((MyDefaultMutableTreeNode)((DefaultMutableTreeNode) component).getParent()).getUserObject()).getTableName());
+                                    columnPopupMenu.setClickedItem(col);
+                                    columnPopupMenu.setClickedItemParent(((Table)((MyDefaultMutableTreeNode)((DefaultMutableTreeNode) component).getParent()).getUserObject()));
                                     columnPopupMenu.getMenu().show(tree, e.getX(), e.getY());
                             }
                         }

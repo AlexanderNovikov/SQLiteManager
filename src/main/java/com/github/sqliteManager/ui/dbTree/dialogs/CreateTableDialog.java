@@ -29,15 +29,11 @@ public class CreateTableDialog extends JDialog {
     private static final String LABEL_ADD_COLUMN = "Add column";
     private static final String LABEL_CREATE_TABLE = "Create table";
     private static final String LABEL_CANCEL = "Cancel";
-
-    private JPanel mainPanel, tablePanel, columnPanel, columnList, columnListPanel;
-    private JTextField tableName, columnName, columnDefaultValue;
-    private JComboBox<String> columnType;
-    private JCheckBox isNotNull;
-    private JButton addColumnButton, removeColumnButton, createButton, cancelButton;
+    private JPanel mainPanel, columnList, columnListPanel;
+    private JTextField tableName;
+    private JButton createButton, cancelButton;
     private final ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
     private Table table;
-    private int result;
 
     public CreateTableDialog() {
         mainPanel = new JPanel();
@@ -48,7 +44,7 @@ public class CreateTableDialog extends JDialog {
         addButtons();
         addScheduler();
 
-        result = JOptionPane.showOptionDialog(
+        int result = JOptionPane.showOptionDialog(
                 null,
                 mainPanel,
                 DIALOG_LABEL,
@@ -76,8 +72,8 @@ public class CreateTableDialog extends JDialog {
         }, 0, 50, TimeUnit.MILLISECONDS);
     }
 
-    protected JOptionPane getOptionPane(JComponent parent) {
-        JOptionPane pane = null;
+    private JOptionPane getOptionPane(JComponent parent) {
+        JOptionPane pane;
         if (!(parent instanceof JOptionPane)) {
             pane = getOptionPane((JComponent)parent.getParent());
         } else {
@@ -87,11 +83,11 @@ public class CreateTableDialog extends JDialog {
     }
 
     private void addTablePanel() {
-        tablePanel = new JPanel();
+        JPanel tablePanel = new JPanel();
         JLabel label = new JLabel(LABEL_TABLE_NAME);
         tableName = new JTextField(15);
         tableName.setName(label.getText());
-        addColumnButton = new JButton(LABEL_ADD_COLUMN);
+        JButton addColumnButton = new JButton(LABEL_ADD_COLUMN);
         addColumnButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -141,15 +137,15 @@ public class CreateTableDialog extends JDialog {
     }
 
     private void addColumn() {
-        columnPanel = new JPanel();
-        columnName = new JTextField(10);
+        JPanel columnPanel = new JPanel();
+        JTextField columnName = new JTextField(10);
         columnName.setName(LABEL_COLUMN_NAME);
-        columnType = new JComboBox<String>(ColumnType.ALL_TYPES);
+        JComboBox<String> columnType = new JComboBox<String>(ColumnType.ALL_TYPES);
         columnType.setName(LABEL_TYPE);
-        columnDefaultValue = new JTextField(DEFAULT_VALUE, 10);
+        JTextField columnDefaultValue = new JTextField(DEFAULT_VALUE, 10);
         columnDefaultValue.setEditable(false);
         columnDefaultValue.setName(LABEL_DEFAULT_VALUE);
-        isNotNull = new JCheckBox();
+        JCheckBox isNotNull = new JCheckBox();
         isNotNull.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -171,7 +167,7 @@ public class CreateTableDialog extends JDialog {
                 }
             }
         });
-        removeColumnButton = new JButton(LABEL_REMOVE);
+        JButton removeColumnButton = new JButton(LABEL_REMOVE);
         removeColumnButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -200,18 +196,15 @@ public class CreateTableDialog extends JDialog {
     }
 
     private Boolean checkTableNameField() {
-        Boolean result = null;
         if (tableName.getText().length() > 0) {
-            result = true;
+            return true;
         } else {
-            result = false;
+            return false;
         }
-        return result;
     }
 
     private Boolean checkColumnNameFields() {
         ArrayList<Boolean> booleans = new ArrayList<Boolean>();
-        Boolean result = null;
         for (Component jPanel : columnList.getComponents()) {
             if (jPanel instanceof JPanel) {
                 for (Component component : ((JPanel) jPanel).getComponents()) {
@@ -226,17 +219,16 @@ public class CreateTableDialog extends JDialog {
             }
         }
         if (booleans.contains(false)) {
-            result = false;
+            return false;
         } else {
-            result = true;
+            return true;
         }
-        return result;
     }
 
     private void getData() {
         table = new Table();
         HashMap<Integer, Column> columns = new HashMap<Integer, Column>();
-        Column column = null;
+        Column column;
         int i = 0;
         for (Component jPanel : columnList.getComponents()) {
             if (jPanel instanceof JPanel && ((JPanel) jPanel).getComponents().length > 1) {
@@ -263,9 +255,5 @@ public class CreateTableDialog extends JDialog {
 
     public Table getTable() {
         return table;
-    }
-
-    public static void main(String[] args) {
-        new CreateTableDialog();
     }
 }

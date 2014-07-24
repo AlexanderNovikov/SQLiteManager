@@ -3,12 +3,9 @@ package com.github.sqliteManager.ui;
 import com.github.sqliteManager.core.models.MyDefaultMutableTreeNode;
 import com.github.sqliteManager.ui.dbTree.DBTreeEngine;
 import com.github.sqliteManager.ui.fileChooser.FileChooser;
-import com.github.sqliteManager.ui.valuesList.ValuesList;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
-import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import java.awt.*;
 

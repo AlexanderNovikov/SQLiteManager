@@ -14,6 +14,15 @@ public class Column {
     public Column() {
     }
 
+    public Column(String columnName) {
+        this.columnName = columnName;
+    }
+
+    public Column(String columnName, String columnType) {
+        this.columnName = columnName;
+        this.columnType = columnType;
+    }
+
     public Column(String columnName, String columnType, boolean notNull, String columnDefaultValue, boolean primaryKey) {
         this.columnName = columnName;
         this.columnType = columnType;
