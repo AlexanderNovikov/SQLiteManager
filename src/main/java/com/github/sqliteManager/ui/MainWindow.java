@@ -12,92 +12,96 @@ import java.awt.*;
 /**
  * Created by alexander on 6/29/14.
  */
-public class MainWindow {
+public class MainWindow extends JPanel {
     public static final String PROGRAM_NAME = "SQLite Manager";
     public static final String CLEAN_BUTTON_LABEL = "Clean";
     public static final String EXECUTE_BUTTON_LABEL = "Execute";
-    private JFrame frame;
-    private JPanel mainPanel, leftPart ,rightPart;
-    private GridBagConstraints constraints;
     private MyDefaultMutableTreeNode root;
     private DefaultTreeModel treeModel;
     private JTree tree;
     private DefaultTableModel tableModel = new DefaultTableModel();
     private JTable table = new JTable(tableModel);
-    private JButton buttonExecute, buttonClean;
-    private JTextPane textPane1;
     private static final FileChooser fileChooser = new FileChooser();
-    private DBTreeEngine treeEngine;
 
 
     public MainWindow() {
-        frame = new JFrame(PROGRAM_NAME);
-        frame.setExtendedState(frame.getExtendedState() | JFrame.MAXIMIZED_BOTH);
-        mainPanel = new JPanel(new GridBagLayout());
-        constraints = new GridBagConstraints();
-        constraints.fill = GridBagConstraints.BOTH;
-        constraints.weighty = 1.0;
-        leftPart = new JPanel(new GridBagLayout());
-        leftPart.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1, true));
-        rightPart = new JPanel(new GridBagLayout());
-        rightPart.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1, true));
+        JFrame frame = new JFrame(PROGRAM_NAME);
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        frame.setPreferredSize(new Dimension((int)screenSize.getWidth(), (int)screenSize.getHeight()));
 
-        constraints.weightx = 0.2;
-        mainPanel.add(leftPart, constraints);
-        constraints.weightx = 0.8;
-        mainPanel.add(rightPart,constraints);
+        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+        splitPane.setLeftComponent(addLeftPart());
+        splitPane.setRightComponent(addRightPart());
+        splitPane.setOneTouchExpandable(true);
+        splitPane.setResizeWeight(0.26);
 
-        addDBPanel(leftPart);
-        treeEngine = new DBTreeEngine(root, tree, treeModel, table, tableModel); //TODO rewrite using setters too much args in constructor
+        DBTreeEngine treeEngine = new DBTreeEngine(root, tree, treeModel, table, tableModel); /*//TODO rewrite using setters too much args in constructor*/
         new MainMenu(frame, tree, treeModel, root, fileChooser, treeEngine); //TODO rewrite using setters too much args in constructor
-        addSQLTextField(rightPart);
-        addSQLButtons(rightPart);
-        addValuesList(rightPart);
 
-        frame.getContentPane().add(mainPanel);
+        frame.add(splitPane, BorderLayout.CENTER);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
     }
 
-    private void addDBPanel(JPanel parentPanel) {
+    private JPanel addLeftPart() {
+        JPanel leftPart = new JPanel(new GridBagLayout());
+        GridBagConstraints constraints = new GridBagConstraints();
+        constraints.fill = GridBagConstraints.BOTH;
+        constraints.weightx = 1.0;
+        constraints.weighty = 1.0;
+        leftPart.add(addDBPanel(), constraints);
+        return leftPart;
+    }
+
+    private JSplitPane addRightPart() {
+        JSplitPane rightPart = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+        rightPart.setResizeWeight(0.3);
+        rightPart.setTopComponent(addSQLTextField());
+        rightPart.setBottomComponent(addValuesList());
+        return rightPart;
+    }
+
+    private JScrollPane addDBPanel() {
+        JPanel treePanel = new JPanel(new GridBagLayout());
+        GridBagConstraints constraints = new GridBagConstraints();
+        constraints.fill = GridBagConstraints.BOTH;
+        constraints.weightx = 1.0;
+        constraints.weighty = 1.0;
         root = new MyDefaultMutableTreeNode();
         treeModel = new DefaultTreeModel(root);
         tree = new JTree(treeModel);
-        tree.setEditable(true);
-        JScrollPane scrollPane = new JScrollPane(tree);
-        parentPanel.add(scrollPane, constraints);
+        tree.setEditable(false);
+        treePanel.add(tree, constraints);
+        return new JScrollPane(treePanel);
     }
 
-    private void addSQLTextField(JPanel parentPanel) {
-        textPane1 = new JTextPane();
-        JScrollPane scrollPane = new JScrollPane(textPane1);
-        constraints.weightx = 1.0;
-        constraints.weighty = 0.3;
-        constraints.gridx = 0;
-        constraints.gridy = 0;
-        parentPanel.add(scrollPane, constraints);
-    }
+    private JPanel addSQLTextField() {
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridBagLayout());
+        JTextPane textPane = new JTextPane();
+        JScrollPane scrollTextPane = new JScrollPane(textPane);
 
-    private void addSQLButtons(JPanel parentPanel) {
         JPanel buttonPanel = new JPanel(new GridBagLayout());
-        buttonExecute = new JButton(CLEAN_BUTTON_LABEL);
-        buttonClean = new JButton(EXECUTE_BUTTON_LABEL);
+        JButton buttonExecute = new JButton(CLEAN_BUTTON_LABEL);
+        JButton buttonClean = new JButton(EXECUTE_BUTTON_LABEL);
         buttonPanel.add(buttonExecute);
         buttonPanel.add(buttonClean);
+
+        GridBagConstraints constraints = new GridBagConstraints();
+        constraints.fill = GridBagConstraints.BOTH;
         constraints.weightx = 1.0;
-        constraints.weighty = 0.01;
-        constraints.gridx = 0;
+        constraints.weighty = 0.9;
+        constraints.gridy = 0;
+        panel.add(scrollTextPane, constraints);
+        constraints.weighty = 0.0;
         constraints.gridy = 1;
-        parentPanel.add(buttonPanel, constraints);
+        panel.add(buttonPanel, constraints);
+
+        return panel;
     }
 
-    private void addValuesList(JPanel parentPanel) {
-        JScrollPane scrollPane = new JScrollPane(table);
-        constraints.weightx = 1.0;
-        constraints.weighty = 0.7;
-        constraints.gridx = 0;
-        constraints.gridy = 2;
-        parentPanel.add(scrollPane, constraints);
+    private JScrollPane addValuesList() {
+        return new JScrollPane(table);
     }
 }

@@ -42,7 +42,6 @@
                         <executions>
                             <execution>
                                 <phase>package</phase>
-                                <!-- append to the packaging phase. -->
                                 <goals>
                                     <goal>bundle</goal>
                                 </goals>
