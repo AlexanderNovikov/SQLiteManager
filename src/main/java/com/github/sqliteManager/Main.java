@@ -2,6 +2,7 @@ package com.github.sqliteManager;
 
 import com.github.sqliteManager.ui.MainWindow;
 
+import javax.swing.*;
 
 
 /**
@@ -9,6 +10,11 @@ import com.github.sqliteManager.ui.MainWindow;
  */
 public class Main {
     public static void main(String[] args) {
-        new MainWindow();
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                new MainWindow();
+            }
+        });
     }
 }

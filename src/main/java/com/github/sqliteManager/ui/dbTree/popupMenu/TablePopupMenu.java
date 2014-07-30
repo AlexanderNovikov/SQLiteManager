@@ -52,10 +52,8 @@ public class TablePopupMenu extends DBTreePopupMenu {
         addMenuItem(menu, RENAME_TABLE_LABEL, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String newTableName = new RenameTableDialog().getInput();
-                if (newTableName != null && newTableName.length() > 0) {
-                    dbTreeEngine.renameTable(clickedItem, newTableName);
-                }
+                String newTableName = new RenameTableDialog(clickedItem.getTableName()).getNewName();
+                dbTreeEngine.renameTable(clickedItem, newTableName);
             }
         });
         addSubMenuItem(menu, VIEW_CONTENT_LABEL, new ArrayList<JSubMenuItem>(Arrays.asList(new JSubMenuItem(VIEW_CONTENT_10, new ActionListener() {

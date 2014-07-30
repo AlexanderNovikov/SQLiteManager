@@ -1,11 +1,14 @@
 package com.github.sqliteManager.core;
 
+import com.apple.eio.FileManager;
 import com.github.sqliteManager.core.models.Column;
 import com.github.sqliteManager.core.models.ColumnType;
 import com.github.sqliteManager.core.models.Table;
 import javafx.scene.control.Tab;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.sql.*;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -50,6 +53,16 @@ public class SQLiteEngine {
     private Connection connection;
 
     public static void main(String[] args) {
+        File orig = new File("database_bak.sqlite");
+        File copy = new File("database.sqlite");
+        if (copy.exists()) {
+            copy.delete();
+        }
+        try {
+            Files.copy(orig.toPath(), copy.toPath());
+        } catch (IOException e) {
+            System.out.println(e);
+        }
         SQLiteEngine db = new SQLiteEngine(new File("database.sqlite"));
         db.openDB();
         Table table = new Table("new table name");
@@ -118,11 +131,11 @@ public class SQLiteEngine {
     }
 
     public void createTable(Table table) {
-        String sqlString = SQL_CREATE_TABLE + SPACE + SQL_QUOTE + table.getTableName() + SQL_QUOTE + "(";
+        String sqlString = SQL_CREATE_TABLE + SPACE + SQL_DOUBLE_QUOTE + table.getTableName() + SQL_DOUBLE_QUOTE + "(";
         for (Column column : table.getColumns().values()) {
             sqlString += SQL_QUOTE + column.getColumnName() + SQL_QUOTE + SPACE + column.getColumnType();
             if (column.isNotNull()) {
-                sqlString += SPACE + SQL_NOT_NULL + SPACE + SQL_DEFAULT + SPACE + SQL_QUOTE + column.getColumnDefaultValue() + SQL_QUOTE;
+                sqlString += SPACE + SQL_NOT_NULL + SPACE + SQL_DEFAULT + SPACE + column.getColumnDefaultValue();
             }
             if (table.getColumns().size() > 1 && (column != table.getColumns().get(table.getColumns().size() - 1))) {
                 sqlString += ",";
@@ -135,7 +148,7 @@ public class SQLiteEngine {
     public void renameTable(Table table, String newTableName) {
         String sqlString = null;
         if (table.getTableName().length() > 0 && newTableName.length() > 0) {
-            sqlString = SQL_ALTER_TABLE + SPACE + SQL_QUOTE + table.getTableName() + SQL_QUOTE + SPACE + SQL_RENAME_TO + SPACE + SQL_QUOTE + newTableName + SQL_QUOTE;
+            sqlString = SQL_ALTER_TABLE + SPACE + SQL_DOUBLE_QUOTE + table.getTableName() + SQL_DOUBLE_QUOTE + SPACE + SQL_RENAME_TO + SPACE + SQL_QUOTE + newTableName + SQL_QUOTE;
 
         }
         executeSQLUpdate(sqlString);
@@ -169,12 +182,12 @@ public class SQLiteEngine {
                 columnList.put(i++, col);
             }
         }
-        String sqlString = SQL_INSERT_INTO + SPACE + SQL_QUOTE + table.getTableName() + SQL_QUOTE + "(";
+        String sqlString = SQL_INSERT_INTO + SPACE + SQL_DOUBLE_QUOTE + table.getTableName() + SQL_DOUBLE_QUOTE + "(";
         for (Column col : columnList.values()) {
             if (col.getColumnName().equals(newColumnName)) {
-                sqlString += newColumnName;
+                sqlString += SQL_QUOTE + newColumnName + SQL_QUOTE;
             } else {
-                sqlString += SQL_DOUBLE_QUOTE + col.getColumnName() + SQL_DOUBLE_QUOTE;
+                sqlString += SQL_QUOTE + col.getColumnName() + SQL_QUOTE;
             }
             if (table.getColumns().size() > 1 && (col != table.getColumns().get(table.getColumns().size() - 1))) {
                 sqlString += ",";
@@ -188,10 +201,9 @@ public class SQLiteEngine {
             }
         }
         sqlString += "\n" + SQL_FROM + SPACE + SQL_QUOTE + table.getTableName() + SQL_TEMP_POSTFIX + SQL_QUOTE;
-        //renameTable(table, table.getTableName() + SQL_TEMP_POSTFIX);
-        //createTable(new Table(table.getTableName(), columnList));
-        System.out.println(sqlString);
-//        executeSQLUpdate(sqlString);
+        renameTable(table, table.getTableName() + SQL_TEMP_POSTFIX);
+        createTable(new Table(table.getTableName(), columnList));
+        executeSQLUpdate(sqlString);
     }
 
     public HashMap<Integer, Table> getTableList() {

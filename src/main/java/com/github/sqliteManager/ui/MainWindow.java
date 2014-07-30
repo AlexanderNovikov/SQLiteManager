@@ -3,26 +3,28 @@ package com.github.sqliteManager.ui;
 import com.github.sqliteManager.core.models.MyDefaultMutableTreeNode;
 import com.github.sqliteManager.ui.dbTree.DBTreeEngine;
 import com.github.sqliteManager.ui.fileChooser.FileChooser;
+import com.github.sqliteManager.ui.sqlField.SQLField;
+import com.github.sqliteManager.ui.valuesList.ValuesListPanel;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.tree.DefaultTreeModel;
 import java.awt.*;
 
+
 /**
  * Created by alexander on 6/29/14.
  */
 public class MainWindow extends JPanel {
     public static final String PROGRAM_NAME = "SQLite Manager";
-    public static final String CLEAN_BUTTON_LABEL = "Clean";
-    public static final String EXECUTE_BUTTON_LABEL = "Execute";
     private MyDefaultMutableTreeNode root;
     private DefaultTreeModel treeModel;
     private JTree tree;
     private DefaultTableModel tableModel = new DefaultTableModel();
     private JTable table = new JTable(tableModel);
     private static final FileChooser fileChooser = new FileChooser();
-
+    private MainMenu mainMenu;
+    private DBTreeEngine treeEngine;
 
     public MainWindow() {
         JFrame frame = new JFrame(PROGRAM_NAME);
@@ -31,12 +33,13 @@ public class MainWindow extends JPanel {
 
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
         splitPane.setLeftComponent(addLeftPart());
+
+        this.treeEngine = new DBTreeEngine(root, tree, treeModel, table, tableModel); //TODO rewrite using setters too much args in constructor
+        this.mainMenu = new MainMenu(frame, tree, treeModel, root, fileChooser, treeEngine); //TODO rewrite using setters too much args in constructor
+
         splitPane.setRightComponent(addRightPart());
         splitPane.setOneTouchExpandable(true);
         splitPane.setResizeWeight(0.26);
-
-        DBTreeEngine treeEngine = new DBTreeEngine(root, tree, treeModel, table, tableModel); /*//TODO rewrite using setters too much args in constructor*/
-        new MainMenu(frame, tree, treeModel, root, fileChooser, treeEngine); //TODO rewrite using setters too much args in constructor
 
         frame.add(splitPane, BorderLayout.CENTER);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -57,8 +60,9 @@ public class MainWindow extends JPanel {
     private JSplitPane addRightPart() {
         JSplitPane rightPart = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
         rightPart.setResizeWeight(0.3);
-        rightPart.setTopComponent(addSQLTextField());
-        rightPart.setBottomComponent(addValuesList());
+        rightPart.setTopComponent(new SQLField(treeEngine).getSQLField());
+        rightPart.setBottomComponent(new ValuesListPanel(table).getValuesListPanel());
+        rightPart.setOneTouchExpandable(true);
         return rightPart;
     }
 
@@ -76,32 +80,4 @@ public class MainWindow extends JPanel {
         return new JScrollPane(treePanel);
     }
 
-    private JPanel addSQLTextField() {
-        JPanel panel = new JPanel();
-        panel.setLayout(new GridBagLayout());
-        JTextPane textPane = new JTextPane();
-        JScrollPane scrollTextPane = new JScrollPane(textPane);
-
-        JPanel buttonPanel = new JPanel(new GridBagLayout());
-        JButton buttonExecute = new JButton(CLEAN_BUTTON_LABEL);
-        JButton buttonClean = new JButton(EXECUTE_BUTTON_LABEL);
-        buttonPanel.add(buttonExecute);
-        buttonPanel.add(buttonClean);
-
-        GridBagConstraints constraints = new GridBagConstraints();
-        constraints.fill = GridBagConstraints.BOTH;
-        constraints.weightx = 1.0;
-        constraints.weighty = 0.9;
-        constraints.gridy = 0;
-        panel.add(scrollTextPane, constraints);
-        constraints.weighty = 0.0;
-        constraints.gridy = 1;
-        panel.add(buttonPanel, constraints);
-
-        return panel;
-    }
-
-    private JScrollPane addValuesList() {
-        return new JScrollPane(table);
-    }
 }

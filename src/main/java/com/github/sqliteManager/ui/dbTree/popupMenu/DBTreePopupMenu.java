@@ -17,9 +17,6 @@ import java.util.ArrayList;
  * Created by alexander on 01/07/14.
  */
 public class DBTreePopupMenu extends JPopupMenu {
-    private static final String DATABASE_LABEL = "Database";
-    private static final String TABLE_LABEL = "Table";
-    private static final String COLUMN_LABEL = "Column";
     private JTree tree;
     private SQLiteEngine sqLiteEngine;
     private DBTreeEngine dbTreeEngine;
@@ -54,8 +51,8 @@ public class DBTreePopupMenu extends JPopupMenu {
                     Object component = tree.getPathForLocation(e.getX(), e.getY()).getLastPathComponent();
                     if (component != null) {
                         if (component instanceof DefaultMutableTreeNode) {
-                            switch (((DefaultMutableTreeNode) component).getDepth()) {
-                                case 2:
+                            switch (((DefaultMutableTreeNode) component).getLevel()) {
+                                case 0:
                                     Database db = (Database) ((DefaultMutableTreeNode) component).getUserObject();
                                     dbPopupMenu.setDbTreeEngine(dbTreeEngine);
                                     dbPopupMenu.getMenu().show(tree, e.getX(), e.getY());
@@ -67,7 +64,7 @@ public class DBTreePopupMenu extends JPopupMenu {
                                     tablePopupMenu.setClickedItem(tb);
                                     tablePopupMenu.getMenu().show(tree, e.getX(), e.getY());
                                     break;
-                                case 0:
+                                case 2:
                                     Column col = (Column) ((DefaultMutableTreeNode) component).getUserObject();
                                     columnPopupMenu.setDbTreeEngine(dbTreeEngine);
                                     columnPopupMenu.setClickedItem(col);

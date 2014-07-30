@@ -4,6 +4,7 @@ import com.github.sqliteManager.ui.dbTree.DBTreeEngine;
 import com.github.sqliteManager.ui.errors.DatabaseNotOpennedError;
 import com.github.sqliteManager.ui.errors.NothingToSaveError;
 import com.github.sqliteManager.ui.fileChooser.FileChooser;
+import com.github.sqliteManager.ui.sqlField.SQLField;
 import com.github.sqliteManager.ui.valuesList.ValuesList;
 
 import javax.swing.*;
@@ -119,5 +120,9 @@ public class MainMenu {
         menuItem.addActionListener(action);
         menuItem.setAccelerator(keyStroke);
         menu.add(menuItem);
+    }
+
+    public File getSelectedFile() {
+        return selectedFile;
     }
 }

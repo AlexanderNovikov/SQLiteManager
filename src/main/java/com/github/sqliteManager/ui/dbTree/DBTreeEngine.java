@@ -3,6 +3,7 @@ package com.github.sqliteManager.ui.dbTree;
 import com.github.sqliteManager.core.SQLiteEngine;
 import com.github.sqliteManager.core.models.*;
 import com.github.sqliteManager.ui.dbTree.popupMenu.DBTreePopupMenu;
+import com.github.sqliteManager.ui.sqlField.SQLField;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -16,9 +17,6 @@ import java.util.HashMap;
  * Created by alexander on 01/07/14.
  */
 public class DBTreeEngine {
-    private static final String DATA_BASE_NAME_STRING = "Database: ";
-    private static final String TABLE_NAME_STRING = "Table: ";
-    private static final String COLUMN_NAME_STRING = "Column: ";
     private SQLiteEngine sqLiteEngine;
     private MyDefaultMutableTreeNode root;
     private JTree tree;
@@ -68,6 +66,13 @@ public class DBTreeEngine {
         }
     }
 
+    public Table getTableByName(String tableName) {
+        Table table = new Table();
+        table.setTableName(tableName);
+        table.setColumns(sqLiteEngine.getColumnList(table));
+        return table;
+    }
+
     public void renameTable(Table table, String newTableName) {
         sqLiteEngine.renameTable(table, newTableName);
         refreshDBTree();
@@ -101,6 +106,7 @@ public class DBTreeEngine {
 
     public void renameColumn(Table table, Column column, String newColumnName) {
         sqLiteEngine.renameColumn(table, column, newColumnName);
+        refreshDBTree();
     }
 
     public void cleanDBTree() {
@@ -110,7 +116,19 @@ public class DBTreeEngine {
     }
 
     public void refreshDBTree() {
-        cleanDBTree();
+        cleanDBTree(); //TODO Rework it to update, not to "CLEAN and FILL"
         fillDBTree();
+    }
+
+    public SQLiteEngine getSqLiteEngine() {
+        return sqLiteEngine;
+    }
+
+    public JTable getValuesList() {
+        return valuesList;
+    }
+
+    public DefaultTableModel getTableModel() {
+        return tableModel;
     }
 }

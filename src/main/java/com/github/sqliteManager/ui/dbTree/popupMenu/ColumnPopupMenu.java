@@ -30,10 +30,8 @@ public class ColumnPopupMenu extends DBTreePopupMenu {
         addMenuItem(menu, RENAME_COLUMN_LABEL, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String newColumnName = new RenameColumnDialog().getInput();
-                if (newColumnName != null && newColumnName.length() > 0) {
+                String newColumnName = new RenameColumnDialog(clickedItem.getColumnName()).getNewName();
                     dbTreeEngine.renameColumn(clickedItemParent, clickedItem, newColumnName);
-                }
             }
         });
         addMenuItem(menu, "Change type", new ActionListener() {
