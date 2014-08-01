@@ -1,7 +1,5 @@
 package com.github.sqliteManager.ui.sqlField;
 
-import com.github.sqliteManager.core.SQLiteEngine;
-import com.github.sqliteManager.ui.MainMenu;
 import com.github.sqliteManager.ui.dbTree.DBTreeEngine;
 import com.github.sqliteManager.ui.valuesList.ValuesList;
 
@@ -36,7 +34,9 @@ public class SQLField {
         buttonExecute.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (treeEngine.getSqLiteEngine() == null) {
+                if (treeEngine.getSqLiteEngine() != null) {
+
+                } else if (treeEngine.getSqLiteEngine() == null) {
                     SwingUtilities.invokeLater(new Runnable() {
                         @Override
                         public void run() {
@@ -69,6 +69,12 @@ public class SQLField {
         mainPanel.add(buttonPanel, constraints);
 
         return mainPanel;
+    }
+
+    private Boolean checkSQLString(String sqlString) {
+        String firstWord = sqlString.split(" ")[0];
+//        if (firstWord.equals())
+        return true;
     }
 
     private void execSQLStatement() {

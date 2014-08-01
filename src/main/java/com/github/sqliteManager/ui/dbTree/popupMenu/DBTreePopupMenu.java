@@ -1,6 +1,6 @@
 package com.github.sqliteManager.ui.dbTree.popupMenu;
 
-import com.github.sqliteManager.core.SQLiteEngine;
+import com.github.sqliteManager.core.sqlite.SQLiteEngine;
 import com.github.sqliteManager.core.models.*;
 import com.github.sqliteManager.ui.dbTree.DBTreeEngine;
 import com.github.sqliteManager.ui.valuesList.ValuesList;

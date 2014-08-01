@@ -1,10 +1,9 @@
 package com.github.sqliteManager.ui.fileChooser;
 
-import com.github.sqliteManager.core.SQLiteEngine;
+import com.github.sqliteManager.core.sqlite.SQLiteEngine;
 import com.github.sqliteManager.ui.fileChooser.dialogs.OverwriteFileDialog;
 
 import javax.swing.*;
-import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.File;
 
@@ -19,6 +18,7 @@ public class FileChooser extends JFileChooser {
     private Boolean accept = null;
     private JFileChooser fileChooser;
     private File selectedFile;
+    private JFrame mainFrame;
 
     public FileChooser() {
         fileChooser = new JFileChooser();
@@ -28,7 +28,7 @@ public class FileChooser extends JFileChooser {
     }
 
     public void chooseFile() {
-        int returnVal = fileChooser.showOpenDialog(null);
+        int returnVal = fileChooser.showOpenDialog(mainFrame);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             selectedFile = fileChooser.getSelectedFile();
         } else {
@@ -84,5 +84,9 @@ public class FileChooser extends JFileChooser {
 
     public File getSelectedFile() {
         return selectedFile;
+    }
+
+    public void setMainFrame(JFrame mainFrame) {
+        this.mainFrame = mainFrame;
     }
 }

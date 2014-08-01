@@ -1,9 +1,9 @@
 package com.github.sqliteManager.ui.dbTree;
 
-import com.github.sqliteManager.core.SQLiteEngine;
+import com.github.sqliteManager.core.sqlite.SQLiteEngine;
 import com.github.sqliteManager.core.models.*;
 import com.github.sqliteManager.ui.dbTree.popupMenu.DBTreePopupMenu;
-import com.github.sqliteManager.ui.sqlField.SQLField;
+import javafx.scene.control.Tab;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;

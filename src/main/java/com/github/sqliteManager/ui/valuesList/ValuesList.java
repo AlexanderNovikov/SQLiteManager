@@ -20,6 +20,8 @@ public class ValuesList {
 
     public ValuesList(JTable table, DefaultTableModel tableModel) {
         this.table = table;
+//        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+//        table.setCellSelectionEnabled(true);
         this.tableModel = tableModel;
     }
 
@@ -39,6 +41,10 @@ public class ValuesList {
         return headers;
     }
 
+    public void setName(String tableName) {
+        table.setName(tableName);
+    }
+
     public void cleanTable() {
         tableModel.setRowCount(0);
         tableModel.setColumnCount(0);
@@ -53,7 +59,7 @@ public class ValuesList {
             }
         }
         if (data != null) {
-            for (ArrayList<Object> arrayList : data.values()) {
+            for (ArrayList arrayList : data.values()) {
                 tableModel.addRow(arrayList.toArray());
             }
         }

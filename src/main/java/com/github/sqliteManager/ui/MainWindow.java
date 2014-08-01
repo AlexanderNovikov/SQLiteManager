@@ -1,6 +1,7 @@
 package com.github.sqliteManager.ui;
 
 import com.github.sqliteManager.core.models.MyDefaultMutableTreeNode;
+import com.github.sqliteManager.core.models.MyJTable;
 import com.github.sqliteManager.ui.dbTree.DBTreeEngine;
 import com.github.sqliteManager.ui.fileChooser.FileChooser;
 import com.github.sqliteManager.ui.sqlField.SQLField;
@@ -21,30 +22,31 @@ public class MainWindow extends JPanel {
     private DefaultTreeModel treeModel;
     private JTree tree;
     private DefaultTableModel tableModel = new DefaultTableModel();
-    private JTable table = new JTable(tableModel);
+    private MyJTable table = new MyJTable(tableModel);
     private static final FileChooser fileChooser = new FileChooser();
     private MainMenu mainMenu;
     private DBTreeEngine treeEngine;
 
     public MainWindow() {
-        JFrame frame = new JFrame(PROGRAM_NAME);
+        JFrame mainFrame = new JFrame(PROGRAM_NAME);
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        frame.setPreferredSize(new Dimension((int)screenSize.getWidth(), (int)screenSize.getHeight()));
+        mainFrame.setPreferredSize(new Dimension((int) screenSize.getWidth(), (int) screenSize.getHeight()));
+
+        fileChooser.setMainFrame(mainFrame);
 
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
         splitPane.setLeftComponent(addLeftPart());
-
         this.treeEngine = new DBTreeEngine(root, tree, treeModel, table, tableModel); //TODO rewrite using setters too much args in constructor
-        this.mainMenu = new MainMenu(frame, tree, treeModel, root, fileChooser, treeEngine); //TODO rewrite using setters too much args in constructor
+        this.mainMenu = new MainMenu(mainFrame, tree, treeModel, root, fileChooser, treeEngine); //TODO rewrite using setters too much args in constructor
 
         splitPane.setRightComponent(addRightPart());
         splitPane.setOneTouchExpandable(true);
         splitPane.setResizeWeight(0.26);
 
-        frame.add(splitPane, BorderLayout.CENTER);
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        frame.pack();
-        frame.setVisible(true);
+        mainFrame.add(splitPane, BorderLayout.CENTER);
+        mainFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        mainFrame.pack();
+        mainFrame.setVisible(true);
     }
 
     private JPanel addLeftPart() {
@@ -61,7 +63,7 @@ public class MainWindow extends JPanel {
         JSplitPane rightPart = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
         rightPart.setResizeWeight(0.3);
         rightPart.setTopComponent(new SQLField(treeEngine).getSQLField());
-        rightPart.setBottomComponent(new ValuesListPanel(table).getValuesListPanel());
+        rightPart.setBottomComponent(new ValuesListPanel(table, treeEngine).getValuesListPanel());
         rightPart.setOneTouchExpandable(true);
         return rightPart;
     }

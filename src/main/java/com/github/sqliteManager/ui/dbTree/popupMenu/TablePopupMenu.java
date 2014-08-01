@@ -61,6 +61,7 @@ public class TablePopupMenu extends DBTreePopupMenu {
             public void actionPerformed(ActionEvent e) {
                 valuesList.setHeaders(dbTreeEngine.getHeaders(clickedItem));
                 valuesList.setData(dbTreeEngine.getValuesRange(clickedItem, 0, 10));
+                valuesList.setName(clickedItem.getTableName());
                 valuesList.fillTable();
             }
         }), new JSubMenuItem(VIEW_CONTENT_100, new ActionListener() {
@@ -68,6 +69,7 @@ public class TablePopupMenu extends DBTreePopupMenu {
             public void actionPerformed(ActionEvent e) {
                 valuesList.setHeaders(dbTreeEngine.getHeaders(clickedItem));
                 valuesList.setData(dbTreeEngine.getValuesRange(clickedItem, 0, 100));
+                valuesList.setName(clickedItem.getTableName());
                 valuesList.fillTable();
             }
         }),new JSubMenuItem(VIEW_CONTENT_1000, new ActionListener() {
@@ -75,6 +77,7 @@ public class TablePopupMenu extends DBTreePopupMenu {
             public void actionPerformed(ActionEvent e) {
                 valuesList.setHeaders(dbTreeEngine.getHeaders(clickedItem));
                 valuesList.setData(dbTreeEngine.getValuesRange(clickedItem, 0, 1000));
+                valuesList.setName(clickedItem.getTableName());
                 valuesList.fillTable();
             }
         }), new JSubMenuItem(VIEW_CONTENT_CUSTOM, new ActionListener() {
@@ -84,6 +87,7 @@ public class TablePopupMenu extends DBTreePopupMenu {
                 if (resultVal != null) {
                     valuesList.setHeaders(dbTreeEngine.getHeaders(clickedItem));
                     valuesList.setData(dbTreeEngine.getValuesRange(clickedItem, resultVal.getStart(), resultVal.getEnd()));
+                    valuesList.setName(clickedItem.getTableName());
                     valuesList.fillTable();
                 }
             }
@@ -92,6 +96,7 @@ public class TablePopupMenu extends DBTreePopupMenu {
             public void actionPerformed(ActionEvent e) {
                 valuesList.setHeaders(dbTreeEngine.getHeaders(clickedItem));
                 valuesList.setData(dbTreeEngine.getAllValues(clickedItem));
+                valuesList.setName(clickedItem.getTableName());
                 valuesList.fillTable();
             }
         }))));

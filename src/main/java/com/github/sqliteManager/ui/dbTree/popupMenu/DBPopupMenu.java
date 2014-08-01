@@ -1,10 +1,9 @@
 package com.github.sqliteManager.ui.dbTree.popupMenu;
 
-import com.github.sqliteManager.core.SQLiteEngine;
+import com.github.sqliteManager.core.sqlite.SQLiteEngine;
 import com.github.sqliteManager.core.models.Table;
 import com.github.sqliteManager.ui.dbTree.DBTreeEngine;
 import com.github.sqliteManager.ui.dbTree.dialogs.CreateTableDialog;
-import com.github.sqliteManager.ui.dbTree.errors.WrongTableNameError;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;

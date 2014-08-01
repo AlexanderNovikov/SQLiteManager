@@ -1,14 +1,9 @@
-package com.github.sqliteManager.core;
+package com.github.sqliteManager.core.sqlite;
 
-import com.apple.eio.FileManager;
 import com.github.sqliteManager.core.models.Column;
-import com.github.sqliteManager.core.models.ColumnType;
 import com.github.sqliteManager.core.models.Table;
-import javafx.scene.control.Tab;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.sql.*;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -34,7 +29,6 @@ public class SQLiteEngine {
     private static final String SQL_WHERE = "WHERE";
     private static final String SQL_PRAGMA = "PRAGMA";
     private static final String SQL_DROP_TABLE = "DROP TABLE";
-    private static final String SQL_MASTER_TABLE_NAME = "sqlite_master";
     private static final String SQL_NOT_NULL = "NOT NULL";
     private static final String SQL_DEFAULT = "DEFAULT";
     private static final String SQL_ALTER_TABLE = "ALTER TABLE";
@@ -51,24 +45,6 @@ public class SQLiteEngine {
     private static final String SQL_DOUBLE_QUOTE = "\"";
     private File file;
     private Connection connection;
-
-    public static void main(String[] args) {
-        File orig = new File("database_bak.sqlite");
-        File copy = new File("database.sqlite");
-        if (copy.exists()) {
-            copy.delete();
-        }
-        try {
-            Files.copy(orig.toPath(), copy.toPath());
-        } catch (IOException e) {
-            System.out.println(e);
-        }
-        SQLiteEngine db = new SQLiteEngine(new File("database.sqlite"));
-        db.openDB();
-        Table table = new Table("new table name");
-        table.setColumns(db.getColumnList(table));
-        db.renameColumn(table, new Column("not", ColumnType.INTEGER), "dd_temp");
-    }
 
     public SQLiteEngine(File file) {
         this.file = file;
@@ -131,14 +107,14 @@ public class SQLiteEngine {
     }
 
     public void createTable(Table table) {
-        String sqlString = SQL_CREATE_TABLE + SPACE + SQL_DOUBLE_QUOTE + table.getTableName() + SQL_DOUBLE_QUOTE + "(";
+        String sqlString = new SQLite().createTable(table.getTableName()) + "(";
         for (Column column : table.getColumns().values()) {
             sqlString += SQL_QUOTE + column.getColumnName() + SQL_QUOTE + SPACE + column.getColumnType();
             if (column.isNotNull()) {
-                sqlString += SPACE + SQL_NOT_NULL + SPACE + SQL_DEFAULT + SPACE + column.getColumnDefaultValue();
+                sqlString += SPACE + SQL_NOT_NULL + SPACE + SQLite.DEFAULT + SPACE + column.getColumnDefaultValue();
             }
             if (table.getColumns().size() > 1 && (column != table.getColumns().get(table.getColumns().size() - 1))) {
-                sqlString += ",";
+                sqlString += COMMA;
             }
         }
         sqlString += ")";
@@ -148,28 +124,18 @@ public class SQLiteEngine {
     public void renameTable(Table table, String newTableName) {
         String sqlString = null;
         if (table.getTableName().length() > 0 && newTableName.length() > 0) {
-            sqlString = SQL_ALTER_TABLE + SPACE + SQL_DOUBLE_QUOTE + table.getTableName() + SQL_DOUBLE_QUOTE + SPACE + SQL_RENAME_TO + SPACE + SQL_QUOTE + newTableName + SQL_QUOTE;
+            sqlString = new SQLite().alterTable(table.getTableName(), newTableName);
 
         }
         executeSQLUpdate(sqlString);
     }
 
     public void dropTable(Table table) {
-        executeSQLUpdate(SQL_DROP_TABLE + SPACE + SQL_QUOTE + table.getTableName() + SQL_QUOTE);
+        executeSQLUpdate(new SQLite().dropTable(table.getTableName()));
     }
 
     public void createColumn(Table table, Column column) {
-        String sqlString = null;
-        if (column.isNotNull()) {
-            sqlString = SQL_ALTER_TABLE + SPACE + SQL_QUOTE + table.getTableName() + SQL_QUOTE + SPACE +
-                    SQL_ADD_COLUMN + SPACE + SQL_QUOTE + column.getColumnName() + SQL_QUOTE + SPACE + column.getColumnType() + SPACE +
-                    SQL_NOT_NULL + SPACE +
-                    SQL_DEFAULT + SPACE + SQL_QUOTE + column.getColumnDefaultValue() + SQL_QUOTE;
-        } else {
-            sqlString = SQL_ALTER_TABLE + SPACE + SQL_QUOTE + table.getTableName() + SQL_QUOTE + SPACE +
-                    SQL_ADD_COLUMN + SPACE + SQL_QUOTE + column.getColumnName() + SQL_QUOTE + SPACE + column.getColumnType();
-        }
-        executeSQLUpdate(sqlString);
+        executeSQLUpdate(new SQLite().alterTable(table.getTableName(), column.getColumnName(), column.getColumnType(), column.isNotNull(), column.getColumnDefaultValue()));
     }
 
     public void renameColumn(Table table, Column column, String newColumnName) {
@@ -182,7 +148,7 @@ public class SQLiteEngine {
                 columnList.put(i++, col);
             }
         }
-        String sqlString = SQL_INSERT_INTO + SPACE + SQL_DOUBLE_QUOTE + table.getTableName() + SQL_DOUBLE_QUOTE + "(";
+        String sqlString = new SQLite().insertInto(table.getTableName()) + "(";
         for (Column col : columnList.values()) {
             if (col.getColumnName().equals(newColumnName)) {
                 sqlString += SQL_QUOTE + newColumnName + SQL_QUOTE;
@@ -211,7 +177,7 @@ public class SQLiteEngine {
             this.openDB();
         }
         HashMap<Integer, Table> result = new HashMap<Integer, Table>();
-        ResultSet resultSet = executeSQLQuery(SQL_SELECT_ALL_FROM + " " + SQL_MASTER_TABLE_NAME + " " + SQL_WHERE + " type = 'table'");
+        ResultSet resultSet = executeSQLQuery(SQL_SELECT_ALL_FROM + " " + SQLite.MASTER_TABLE + " " + SQL_WHERE + " type = 'table'");
         try {
             int i = 0;
             while (resultSet.next()) {
@@ -229,8 +195,7 @@ public class SQLiteEngine {
             openDB();
         }
         HashMap<Integer, Column> result = new HashMap<Integer, Column>();
-        String sqlString = SQL_PRAGMA + " table_info(" + SQL_QUOTE + table.getTableName() + SQL_QUOTE + ")";
-        ResultSet resultSet = executeSQLQuery(sqlString);
+        ResultSet resultSet = executeSQLQuery(new SQLite().pragmaTableInfo(table.getTableName()));
         try {
             int i = 0;
             while (resultSet.next()) {
@@ -277,5 +242,15 @@ public class SQLiteEngine {
             }
         }
         return result;
+    }
+
+    public void removeRowByRowID(Table table, int rowID) {
+        executeSQLUpdate(new SQLite().removeRowByRowID(table.getTableName(), rowID));
+    }
+
+    public void removeRowsByRowID(Table table, HashMap<Integer, Integer> rowID) {
+        for (int i : rowID.values()) {
+            removeRowByRowID(table, i);
+        }
     }
 }
