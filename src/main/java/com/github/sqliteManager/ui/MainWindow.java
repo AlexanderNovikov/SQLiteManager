@@ -78,6 +78,7 @@ public class MainWindow extends JPanel {
         treeModel = new DefaultTreeModel(root);
         tree = new JTree(treeModel);
         tree.setEditable(false);
+        tree.setName("tree");
         treePanel.add(tree, constraints);
         return new JScrollPane(treePanel);
     }

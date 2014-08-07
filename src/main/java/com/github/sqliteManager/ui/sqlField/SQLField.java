@@ -36,7 +36,7 @@ public class SQLField {
             public void actionPerformed(ActionEvent e) {
                 if (treeEngine.getSqLiteEngine() != null) {
 
-                } else if (treeEngine.getSqLiteEngine() == null) {
+                } else {
                     SwingUtilities.invokeLater(new Runnable() {
                         @Override
                         public void run() {

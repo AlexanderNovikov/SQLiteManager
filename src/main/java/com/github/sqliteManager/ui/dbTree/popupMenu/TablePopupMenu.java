@@ -9,6 +9,7 @@ import com.github.sqliteManager.ui.dbTree.dialogs.DeleteTableDialog;
 import com.github.sqliteManager.ui.dbTree.dialogs.RenameTableDialog;
 import com.github.sqliteManager.ui.dbTree.dialogs.ValuesRangeDialog;
 import com.github.sqliteManager.ui.valuesList.ValuesList;
+import com.github.sqliteManager.ui.valuesList.dialogs.AddRowDialog;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -47,6 +48,12 @@ public class TablePopupMenu extends DBTreePopupMenu {
             public void actionPerformed(ActionEvent e) {
                 Column column = new CreateColumnDialog().getColumn();
                 dbTreeEngine.createColumn(clickedItem, column);
+            }
+        });
+        addMenuItem(menu, "Add value", new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                AddRowDialog dialog = new AddRowDialog(SwingUtilities.getRoot(menu), clickedItem.getColumns()); //TODO Finish code to add input values into db
             }
         });
         addMenuItem(menu, RENAME_TABLE_LABEL, new ActionListener() {

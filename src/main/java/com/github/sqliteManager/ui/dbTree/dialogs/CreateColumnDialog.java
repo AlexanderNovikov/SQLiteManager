@@ -22,7 +22,7 @@ public class CreateColumnDialog {
     private static final String LABEL_TYPE = "Type";
     private static final String LABEL_NOT_NULL = "Not Null";
     private static final String LABEL_DEFAULT_VALUE = "Default Value";
-    private static final String DIALOG_LABEL = "New column";
+    private static final String DIALOG_TITLE = "New column";
     private static final int TEXT_FIELD_LENGTH = 15;
     private static final String LABEL_CREATE_COLUMN = "Create column";
     private static final String LABEL_CANCEL = "Cancel";
@@ -44,7 +44,7 @@ public class CreateColumnDialog {
         int result = JOptionPane.showOptionDialog(
                 null,
                 mainPanel,
-                DIALOG_LABEL,
+                DIALOG_TITLE,
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.PLAIN_MESSAGE,
                 null,

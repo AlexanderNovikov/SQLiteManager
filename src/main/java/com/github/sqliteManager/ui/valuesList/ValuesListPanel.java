@@ -2,12 +2,13 @@ package com.github.sqliteManager.ui.valuesList;
 
 import com.github.sqliteManager.core.models.MyJTable;
 import com.github.sqliteManager.core.models.Table;
-import com.github.sqliteManager.core.sqlite.SQLiteEngine;
 import com.github.sqliteManager.ui.dbTree.DBTreeEngine;
-import javafx.scene.control.Tab;
+import com.github.sqliteManager.ui.utils.FindComponent;
+import com.github.sqliteManager.ui.valuesList.dialogs.AddRowDialog;
 
 import javax.swing.*;
 import javax.swing.border.MatteBorder;
+import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -21,6 +22,9 @@ public class ValuesListPanel {
     private static final String LABEL_CHANGE = "Change";
     private static final String LABEL_DELETE = "Delete";
     private static final String LABEL_SEARCH = "Search";
+    private static final String ERROR_TITLE = "Error!";
+    private static final String NO_ROWS_SELECTED = "No rows selected!";
+    private static final String DATABASE_NOT_FOUND = "Database not found!";
     private MyJTable table;
     private DBTreeEngine treeEngine;
 
@@ -69,6 +73,19 @@ public class ValuesListPanel {
         JPanel rightButtonPanel = new JPanel();
         rightButtonPanel.setAlignmentX(JPanel.LEFT_ALIGNMENT);
         JButton buttonAdd = new JButton(LABEL_ADD);
+        buttonAdd.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (checkDBAvailability()) {
+                    SwingUtilities.invokeLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            new AddRowDialog(SwingUtilities.getRoot(table), treeEngine.getSqLiteEngine().getColumnList(getSelectedTable()));
+                        }
+                    });
+                }
+            }
+        });
         rightButtonPanel.add(buttonAdd);
         JButton buttonCopy = new JButton(LABEL_COPY);
         rightButtonPanel.add(buttonCopy);
@@ -78,13 +95,47 @@ public class ValuesListPanel {
         buttonDelete.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (table != null) {
-                    treeEngine.getSqLiteEngine().removeRowsByRowID(new Table(table.getName()), table.getSelectedRowID());
+                if (checkDBAvailability()) {
+                    if (table.getSelectedRow() < 0) {
+                        showError(NO_ROWS_SELECTED, ERROR_TITLE);
+                    } else {
+                        treeEngine.getSqLiteEngine().removeRowsByRowID(new Table(table.getName()), table.getSelectedRowID());
+                    }
+                } else {
+                    showError(DATABASE_NOT_FOUND, ERROR_TITLE);
                 }
             }
         });
         rightButtonPanel.add(buttonDelete);
         return rightButtonPanel;
+    }
+
+    private void showError(final String errorMessage, final String errorTitle) {
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                JOptionPane.showMessageDialog(SwingUtilities.getRoot(table), errorMessage, errorTitle, JOptionPane.ERROR_MESSAGE);
+            }
+        });
+    }
+
+    private Boolean checkDBAvailability() {
+        if (table != null && treeEngine != null && treeEngine.getSqLiteEngine() != null) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private Table getSelectedTable() {
+        FindComponent findComponent = new FindComponent(table); //TODO fix this
+        JTree tree = (JTree)findComponent.getFirstComponentByName("tree");
+        Object component = tree.getLastSelectedPathComponent();
+        if (component instanceof DefaultMutableTreeNode) {
+            return ((Table)((DefaultMutableTreeNode) component).getUserObject());
+        } else {
+            return null;
+        }
     }
 
     private JScrollPane getValuesTable() {
