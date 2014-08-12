@@ -5,7 +5,6 @@ import com.github.sqliteManager.core.models.ColumnType;
 import com.github.sqliteManager.core.models.MyBox;
 import com.github.sqliteManager.core.models.Table;
 import com.github.sqliteManager.ui.utils.FindComponent;
-import com.sun.codemodel.internal.JOp;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,11 +16,12 @@ import java.util.HashMap;
  * Created by alexander on 01/08/14.
  */
 public class AddRowDialog {
-
     private static final String DIALOG_TITLE = "title";
+    private static final String VAL_FIELD = "valField";
     private JButton createButton, cancelButton;
     private HashMap<Integer, Column> columnList;
     private JPanel mainPanel = new JPanel();
+    private HashMap<Integer, String> data = new HashMap<Integer, String>();
 
     public static void main(String[] args) {
         Table table = new Table();
@@ -31,9 +31,6 @@ public class AddRowDialog {
         columnList.put(1, new Column("columnName2", ColumnType.INTEGER, true, "dv", true));
         table.setColumns(columnList);
         new AddRowDialog(null, table.getColumns());
-    }
-
-    public AddRowDialog() {
     }
 
     public AddRowDialog(Component rootComponent, HashMap<Integer, Column> columnList) {
@@ -50,6 +47,9 @@ public class AddRowDialog {
                 new JButton[]{createButton, cancelButton},
                 null
         );
+        if (result == JOptionPane.YES_OPTION) {
+            data = setData();
+        }
     }
 
     private void addColumnPanel() {
@@ -64,7 +64,7 @@ public class AddRowDialog {
 
     private MyBox addField(Column column) {
         JTextField textField = new JTextField(15);
-        textField.setName("valField");
+        textField.setName(VAL_FIELD);
         if (column.getColumnDefaultValue() != null) {
             textField.setText(column.getColumnDefaultValue());
         } else {
@@ -90,7 +90,6 @@ public class AddRowDialog {
             public void actionPerformed(ActionEvent e) {
                 JOptionPane pane = getOptionPane((JComponent)e.getSource());
                 pane.setValue(createButton);
-                getData();
             }
         });
         cancelButton = new JButton("Cancel");
@@ -103,9 +102,19 @@ public class AddRowDialog {
         });
     }
 
-    private void getData() {
+    private HashMap<Integer, String> setData() {
         FindComponent findComponent = new FindComponent(mainPanel);
-        System.out.println(findComponent.getAllComponentsByName("valField").size());
+        HashMap<Integer, String> result = new HashMap<Integer, String>();
+        int i = 0;
+        for (Component component : findComponent.getAllComponentsByName(VAL_FIELD).values()) {
+            if (component instanceof JTextField) {
+                result.put(i++, ((JTextField) component).getText());
+            }
+        }
+        return result;
     }
 
+    public HashMap<Integer, String> getData() {
+        return data;
+    }
 }

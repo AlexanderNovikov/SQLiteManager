@@ -8,6 +8,11 @@ import com.github.sqliteManager.ui.valuesList.dialogs.AddRowDialog;
 
 import javax.swing.*;
 import javax.swing.border.MatteBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -25,6 +30,8 @@ public class ValuesListPanel {
     private static final String ERROR_TITLE = "Error!";
     private static final String NO_ROWS_SELECTED = "No rows selected!";
     private static final String DATABASE_NOT_FOUND = "Database not found!";
+    private static final String DATABASE_OR_TABLE_NOT_FOUND = "Database or table not found!";
+    private static final String TREE_NAME = "tree";
     private MyJTable table;
     private DBTreeEngine treeEngine;
 
@@ -76,13 +83,16 @@ public class ValuesListPanel {
         buttonAdd.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (checkDBAvailability()) {
+                if (checkDBAvailability() && getSelectedTable() != null) {
                     SwingUtilities.invokeLater(new Runnable() {
                         @Override
                         public void run() {
-                            new AddRowDialog(SwingUtilities.getRoot(table), treeEngine.getSqLiteEngine().getColumnList(getSelectedTable()));
+                            AddRowDialog addRowDialog = new AddRowDialog(SwingUtilities.getRoot(table), treeEngine.getSqLiteEngine().getColumnList(getSelectedTable()));
+                            treeEngine.getSqLiteEngine().insertValue(getSelectedTable(), addRowDialog.getData());
                         }
                     });
+                } else {
+                    showError(DATABASE_OR_TABLE_NOT_FOUND, ERROR_TITLE);
                 }
             }
         });
@@ -99,7 +109,7 @@ public class ValuesListPanel {
                     if (table.getSelectedRow() < 0) {
                         showError(NO_ROWS_SELECTED, ERROR_TITLE);
                     } else {
-                        treeEngine.getSqLiteEngine().removeRowsByRowID(new Table(table.getName()), table.getSelectedRowID());
+                        treeEngine.getSqLiteEngine().removeRowsByRowID(getSelectedTable(), table.getSelectedRowID());
                     }
                 } else {
                     showError(DATABASE_NOT_FOUND, ERROR_TITLE);
@@ -128,8 +138,8 @@ public class ValuesListPanel {
     }
 
     private Table getSelectedTable() {
-        FindComponent findComponent = new FindComponent(table); //TODO fix this
-        JTree tree = (JTree)findComponent.getFirstComponentByName("tree");
+        FindComponent findComponent = new FindComponent(table);
+        JTree tree = (JTree)findComponent.getFirstComponentByName(TREE_NAME);
         Object component = tree.getLastSelectedPathComponent();
         if (component instanceof DefaultMutableTreeNode) {
             return ((Table)((DefaultMutableTreeNode) component).getUserObject());
@@ -139,6 +149,12 @@ public class ValuesListPanel {
     }
 
     private JScrollPane getValuesTable() {
+        table.getModel().addTableModelListener(new TableModelListener() {
+            @Override
+            public void tableChanged(TableModelEvent e) {
+                System.out.println(e.getType());
+            }
+        });
         return new JScrollPane(table);
     }
 }

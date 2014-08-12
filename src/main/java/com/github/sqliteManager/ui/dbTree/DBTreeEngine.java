@@ -109,6 +109,22 @@ public class DBTreeEngine {
         refreshDBTree();
     }
 
+    public void insertValue(Table table, HashMap<Integer, String> values) {
+        sqLiteEngine.insertValue(table, values);
+    }
+
+    public void copyValue() {
+
+    }
+
+    public void changeValue() {
+
+    }
+
+    public void removeValue() {
+
+    }
+
     public void cleanDBTree() {
         root.setUserObject("");
         root.removeAllChildren();

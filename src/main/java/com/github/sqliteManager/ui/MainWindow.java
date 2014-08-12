@@ -18,30 +18,27 @@ import java.awt.*;
  */
 public class MainWindow extends JPanel {
     public static final String PROGRAM_NAME = "SQLite Manager";
+    private static final double RESIZE_WEIGHT = 0.26;
+    private static final String TREE_NAME = "tree";
     private MyDefaultMutableTreeNode root;
     private DefaultTreeModel treeModel;
     private JTree tree;
     private DefaultTableModel tableModel = new DefaultTableModel();
     private MyJTable table = new MyJTable(tableModel);
-    private static final FileChooser fileChooser = new FileChooser();
-    private MainMenu mainMenu;
     private DBTreeEngine treeEngine;
 
     public MainWindow() {
         JFrame mainFrame = new JFrame(PROGRAM_NAME);
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         mainFrame.setPreferredSize(new Dimension((int) screenSize.getWidth(), (int) screenSize.getHeight()));
-
-        fileChooser.setMainFrame(mainFrame);
-
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
         splitPane.setLeftComponent(addLeftPart());
-        this.treeEngine = new DBTreeEngine(root, tree, treeModel, table, tableModel); //TODO rewrite using setters too much args in constructor
-        this.mainMenu = new MainMenu(mainFrame, tree, treeModel, root, fileChooser, treeEngine); //TODO rewrite using setters too much args in constructor
+        this.treeEngine = new DBTreeEngine(root, tree, treeModel, table, tableModel);
+        new MainMenu(mainFrame, treeEngine);
 
         splitPane.setRightComponent(addRightPart());
         splitPane.setOneTouchExpandable(true);
-        splitPane.setResizeWeight(0.26);
+        splitPane.setResizeWeight(RESIZE_WEIGHT);
 
         mainFrame.add(splitPane, BorderLayout.CENTER);
         mainFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -78,7 +75,7 @@ public class MainWindow extends JPanel {
         treeModel = new DefaultTreeModel(root);
         tree = new JTree(treeModel);
         tree.setEditable(false);
-        tree.setName("tree");
+        tree.setName(TREE_NAME);
         treePanel.add(tree, constraints);
         return new JScrollPane(treePanel);
     }

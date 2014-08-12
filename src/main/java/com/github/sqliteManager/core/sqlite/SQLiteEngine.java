@@ -8,6 +8,7 @@ import java.sql.*;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 
 /**
  * Created by alexander on 30/06/14.
@@ -242,6 +243,20 @@ public class SQLiteEngine {
             }
         }
         return result;
+    }
+
+    public void insertValue(Table table, HashMap<Integer, String> values) {
+        String sqlString = new SQLite().insertInto(table.getTableName()) + SQLite.SPACE + SQLite.VALUES + SQLite.SPACE + SQLite.LEFT_BRACE;
+        Iterator it = values.values().iterator();
+        while (it.hasNext()) {
+            sqlString += it.next();
+            if (it.hasNext()) {
+                sqlString += SQLite.COMMA;
+            }
+        }
+        sqlString += SQLite.RIGHT_BRACE;
+        System.out.println(sqlString);
+        executeSQLUpdate(sqlString);
     }
 
     public void removeRowByRowID(Table table, int rowID) {

@@ -21,6 +21,7 @@ public class SQLite {
     public static final String DROP_VIEW = "DROP VIEW";
     public static final String INSERT = "INSERT";
     public static final String INTO = "INTO";
+    public static final String VALUES = "VALUES";
     public static final String PRAGMA = "PRAGMA";
     public static final String TABLE_INFO = "table_info";
     public static final String REPLACE = "REPLACE";

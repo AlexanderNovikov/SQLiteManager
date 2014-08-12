@@ -8,7 +8,6 @@ import java.util.*;
  * Created by alexander on 04/08/14.
  */
 public class FindComponent {
-    Component firstComponent = null;
     private Object rootComponent;
     private HashMap<Integer, Component> componentList = new HashMap<Integer, Component>();
     private int i = 0;
@@ -16,14 +15,14 @@ public class FindComponent {
     public FindComponent(Object component) {
         Component comp = SwingUtilities.getRootPane((JComponent)component);
         this.rootComponent = comp;
-        getComponentList(rootComponent);
+        getAllComponents(rootComponent);
     }
 
-    private void getComponentList(Object rootComponent) {
+    private void getAllComponents(Object rootComponent) {
         if (rootComponent instanceof JComponent) {
             for (Component component : ((JComponent) rootComponent).getComponents()) {
                 componentList.put(i++, component);
-                getComponentList(component);
+                getAllComponents(component);
             }
         }
     }

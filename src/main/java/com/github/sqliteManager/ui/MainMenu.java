@@ -1,15 +1,11 @@
 package com.github.sqliteManager.ui;
 
 import com.github.sqliteManager.ui.dbTree.DBTreeEngine;
-import com.github.sqliteManager.ui.errors.DatabaseNotOpennedError;
+import com.github.sqliteManager.ui.errors.DatabaseNotOpenedError;
 import com.github.sqliteManager.ui.errors.NothingToSaveError;
 import com.github.sqliteManager.ui.fileChooser.FileChooser;
-import com.github.sqliteManager.ui.sqlField.SQLField;
-import com.github.sqliteManager.ui.valuesList.ValuesList;
 
 import javax.swing.*;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -19,7 +15,7 @@ import java.io.File;
 /**
  * Created by alexander on 01/07/14.
  */
-public class MainMenu {
+public class MainMenu extends JMenuBar {
     private static final int CMD_KEY = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
     private static final String FILE_MENU_LABEL = "File";
     private static final String FILE_MENU_NEW_DATABASE_LABEL = "New Database";
@@ -30,29 +26,23 @@ public class MainMenu {
     private static final String FILE_MENU_EXIT_PROGRAM_LABEL = "Exit Program";
     private static final String EDIT_MENU_LABEL = "Edit";
     private static final String HELP_MENU_LABEL = "Help";
+    private static final String MAIN_MENU_NAME = "mainMenu";
 
-    private JFrame frame;
-    private JTree tree;
-    private DefaultTreeModel treeModel;
-    private DefaultMutableTreeNode root;
-    private static  final JMenuBar mainMenu = new JMenuBar();
+    private JFrame mainFrame;
+    private static final FileChooser fileChooser = new FileChooser();
     private File selectedFile;
-    private FileChooser fileChooser;
     private DBTreeEngine treeEngine;
 
-    public MainMenu(JFrame frame, JTree tree, DefaultTreeModel treeModel, DefaultMutableTreeNode root, FileChooser fileChooser, DBTreeEngine treeEngine) {
-        this.frame = frame;
-        this.tree = tree;
-        this.treeModel = treeModel;
-        this.root = root;
-        this.fileChooser = fileChooser;
+    public MainMenu(JFrame mainFrame, DBTreeEngine treeEngine) {
+        this.mainFrame = mainFrame;
         this.treeEngine = treeEngine;
+        setName(MAIN_MENU_NAME);
         initMainMenu();
     }
 
     private void initMainMenu() {
-        addMenu(mainMenu, FILE_MENU_LABEL);
-        addMenuItem(mainMenu.getMenu(0), FILE_MENU_NEW_DATABASE_LABEL, new ActionListener() {
+        addMenu(this, FILE_MENU_LABEL);
+        addMenuItem(this.getMenu(0), FILE_MENU_NEW_DATABASE_LABEL, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 fileChooser.chooseFileForSaving();
@@ -62,7 +52,7 @@ public class MainMenu {
                 }
             }
         }, KeyStroke.getKeyStroke(KeyEvent.VK_N, CMD_KEY));
-        addMenuItem(mainMenu.getMenu(0), FILE_MENU_OPEN_DATABASE_LABEL, new ActionListener() {
+        addMenuItem(this.getMenu(0), FILE_MENU_OPEN_DATABASE_LABEL, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 fileChooser.chooseFile();
@@ -72,27 +62,27 @@ public class MainMenu {
                 }
             }
         }, KeyStroke.getKeyStroke(KeyEvent.VK_O, CMD_KEY));
-        addMenuItem(mainMenu.getMenu(0), FILE_MENU_RELOAD_DATABASE_LABEL, new ActionListener() {
+        addMenuItem(this.getMenu(0), FILE_MENU_RELOAD_DATABASE_LABEL, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (selectedFile != null) {
                     treeEngine.refreshDBTree();
                 } else {
-                    new DatabaseNotOpennedError();
+                    new DatabaseNotOpenedError(mainFrame);
                 }
             }
         }, KeyStroke.getKeyStroke(KeyEvent.VK_R, CMD_KEY));
-        addMenuItem(mainMenu.getMenu(0), FILE_MENU_SAVE_AS_LABEL, new ActionListener() {
+        addMenuItem(this.getMenu(0), FILE_MENU_SAVE_AS_LABEL, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (selectedFile != null) {
                     fileChooser.chooseFileForSaving(selectedFile.getName());
                 } else {
-                    new NothingToSaveError();
+                    new NothingToSaveError(mainFrame);
                 }
             }
         }, KeyStroke.getKeyStroke(KeyEvent.VK_S, CMD_KEY));
-        addMenuItem(mainMenu.getMenu(0), FILE_MENU_CLOSE_DATABASE_LABEL, new ActionListener() {
+        addMenuItem(this.getMenu(0), FILE_MENU_CLOSE_DATABASE_LABEL, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (selectedFile != null) {
@@ -100,15 +90,15 @@ public class MainMenu {
                 }
             }
         }, null);
-        addMenuItem(mainMenu.getMenu(0), FILE_MENU_EXIT_PROGRAM_LABEL, new ActionListener() {
+        addMenuItem(this.getMenu(0), FILE_MENU_EXIT_PROGRAM_LABEL, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.exit(0);
             }
         }, KeyStroke.getKeyStroke(KeyEvent.VK_Q, CMD_KEY));
-        addMenu(mainMenu, EDIT_MENU_LABEL);
-        addMenu(mainMenu, HELP_MENU_LABEL);
-        frame.setJMenuBar(mainMenu);
+        addMenu(this, EDIT_MENU_LABEL);
+        addMenu(this, HELP_MENU_LABEL);
+        mainFrame.setJMenuBar(this);
     }
 
     private void addMenu(JMenuBar menuBar, String menuName) {
@@ -125,4 +115,5 @@ public class MainMenu {
     public File getSelectedFile() {
         return selectedFile;
     }
+
 }
