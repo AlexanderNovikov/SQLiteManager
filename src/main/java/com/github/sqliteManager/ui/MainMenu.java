@@ -105,6 +105,7 @@ public class MainMenu extends JMenuBar {
         JMenu menu = new JMenu(menuName);
         menuBar.add(menu);
     }
+
     private void addMenuItem(JMenu menu, String menuItemName, ActionListener action, KeyStroke keyStroke) {
         JMenuItem menuItem = new JMenuItem(menuItemName);
         menuItem.addActionListener(action);
